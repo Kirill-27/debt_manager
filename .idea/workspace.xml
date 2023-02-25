@@ -5,17 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1510878e-4c5f-4281-8d87-cd3965ca00dd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/cmd/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/configs/config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/debt.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/summ_debt.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/user.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/handler/auth.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/handler/debt.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/handler/handler.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/handler/response.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/friends.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/summ_debt.go" beforeDir="false" afterPath="$PROJECT_DIR$/data/current_debts.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/data/user.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,13 +53,13 @@
     "WebServerToolWindowFactoryState": "false",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/Users/kirillchernov/go/src/github.com/kirill-27/debt_manager"
+    "last_opened_file_path": "/Users/kirillchernov/go/src/github.com/kirill-27/debt_manager/pkg/handler"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/pkg/handler" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/data" />
     </key>
   </component>
