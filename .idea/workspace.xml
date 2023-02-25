@@ -5,11 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1510878e-4c5f-4281-8d87-cd3965ca00dd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/data/friends.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/review.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/repository/auth_postgress.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/repository/postgress.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/repository/repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/service/service.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/summ_debt.go" beforeDir="false" afterPath="$PROJECT_DIR$/data/current_debts.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/data/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/handler/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/000001_init.down.sql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/000001_init.down.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/000001_init.up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/000001_init.up.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/modules.txt" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/modules.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,11 +61,13 @@
     "WebServerToolWindowFactoryState": "false",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/Users/kirillchernov/go/src/github.com/kirill-27/debt_manager/pkg/handler"
+    "last_opened_file_path": "/Users/kirillchernov/go/src/github.com/kirill-27/debt_manager/pkg/service"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/pkg/service" />
+      <recent name="$PROJECT_DIR$/pkg/repository" />
       <recent name="$PROJECT_DIR$/pkg/handler" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/data" />

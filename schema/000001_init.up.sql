@@ -35,3 +35,13 @@ CREATE TABLE current_debts
     lender_id  int not null,
     amount  int not null
 );
+
+CREATE TABLE reviews
+(
+    id serial not null unique,
+    debtor_id  int not null,
+    lender_id  int not null,
+    comment text not null,
+    rate  int not null,
+    created_at timestamp without time zone not null
+);
