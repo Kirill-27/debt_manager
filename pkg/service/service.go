@@ -11,7 +11,9 @@ type Authorization interface {
 	GetUserById(id int) (*data.User, error)
 	UpdateUser(user data.User) error
 	CreateUser(user data.User) (int, error)
-	GetUser(username, password string) (*data.User, error)
+	GetUser(email, password string) (*data.User, error)
+	GenerateToken(email, password string) (string, error)
+	ParseToken(token string) (int, error)
 }
 
 type Service struct {

@@ -5,7 +5,7 @@ CREATE TABLE users
     password    text not null,
     full_name  text not null,
     subscription_type int not null,
-    phone text not null,
+    photo text not null,
     rating float not null
 );
 

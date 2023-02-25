@@ -1,7 +1,10 @@
 package handler
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/kirill-27/debt_manager/data"
+	"net/http"
 )
 
 // @Summary SignUp
@@ -17,26 +20,26 @@ import (
 // @Failure default {object} errorResponse
 // @Router /auth/sign-up [post]
 func (h *Handler) signUp(c *gin.Context) {
-	//var input data.User
-	//
-	//if err := c.BindJSON(&input); err != nil {
-	//	newErrorResponse(c, http.StatusBadRequest, "invalid input body")
-	//	return
-	//}
-	//
-	//id, err := h.services.Authorization.CreateCustomer(input)
-	//if err != nil {
-	//	newErrorResponse(c, http.StatusInternalServerError, err.Error())
-	//	return
-	//}
-	//
-	//c.JSON(http.StatusOK, map[string]interface{}{
-	//	"id": id,
-	//})
+	var input data.User
+
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	id, err := h.services.Authorization.CreateUser(input)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"id": id,
+	})
 }
 
 type signInInput struct {
-	Username string `json:"username" binding:"required"`
+	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
@@ -53,20 +56,24 @@ type signInInput struct {
 // @Failure default {object} errorResponse
 // @Router /auth/sign-in [post]
 func (h *Handler) signIn(c *gin.Context) {
-	//var input signInInput
-	//
-	//if err := c.BindJSON(&input); err != nil {
-	//	newErrorResponse(c, http.StatusBadRequest, err.Error())
-	//	return
-	//}
-	//
-	//token, err := h.services.Authorization.GenerateToken(input.Username, input.Password)
-	//if err != nil {
-	//	newErrorResponse(c, http.StatusInternalServerError, err.Error())
-	//	return
-	//}
-	//
-	//c.JSON(http.StatusOK, map[string]interface{}{
-	//	"token": token,
-	//})
+	var input signInInput
+
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	token, err := h.services.Authorization.GenerateToken(input.Email, input.Password)
+	if err != nil {
+		status := http.StatusInternalServerError
+		if err.Error() == errors.New("wrong email or password").Error() {
+			status = http.StatusNotFound
+		}
+		newErrorResponse(c, status, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"token": token,
+	})
 }

@@ -1,7 +1,9 @@
 package service
 
 import (
+	"crypto/sha1"
 	"errors"
+	"fmt"
 	"github.com/golang-jwt/jwt"
 	"github.com/kirill-27/debt_manager/data"
 	"github.com/kirill-27/debt_manager/pkg/repository"
@@ -11,11 +13,12 @@ import (
 const (
 	signingKey = "dfvjdfv@21#@d(q*Djdsdf"
 	tokenTTL   = 60 * 24 * time.Hour
+	salt       = "h0q12hqw124f17ajf3ajs"
 )
 
 type tokenClaims struct {
 	jwt.StandardClaims
-	CustomerId int `json:"customer_id"`
+	UserId int `json:"user_id"`
 }
 
 type AuthService struct {
@@ -26,16 +29,18 @@ func NewAuthService(repo repository.Authorization) *AuthService {
 	return &AuthService{repo: repo}
 }
 
-func (s *AuthService) CreateUser(customer data.User) (int, error) {
-	return s.repo.CreateUser(customer)
+func (s *AuthService) CreateUser(user data.User) (int, error) {
+	user.SubscriptionType = data.SubscriptionTypeFree
+	user.Password = generatePasswordHash(user.Password)
+	return s.repo.CreateUser(user)
 }
 
-func (s *AuthService) GenerateToken(username, password string) (string, error) {
-	customer, err := s.repo.GetUser(username, password)
+func (s *AuthService) GenerateToken(email, password string) (string, error) {
+	user, err := s.repo.GetUser(email, generatePasswordHash(password))
 	if err != nil {
 		return "", err
 	}
-	if customer == nil {
+	if user == nil {
 		return "", errors.New("wrong username or password")
 	}
 
@@ -44,7 +49,7 @@ func (s *AuthService) GenerateToken(username, password string) (string, error) {
 			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
-		customer.Id,
+		user.Id,
 	})
 
 	return token.SignedString([]byte(signingKey))
@@ -67,7 +72,14 @@ func (s *AuthService) ParseToken(accessToken string) (int, error) {
 		return 0, errors.New("token claims are not of type *tokenClaims")
 	}
 
-	return claims.CustomerId, nil
+	return claims.UserId, nil
+}
+
+func generatePasswordHash(password string) string {
+	hash := sha1.New()
+	hash.Write([]byte(password))
+
+	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
 }
 
 func (s *AuthService) GetUserById(id int) (*data.User, error) {
@@ -78,6 +90,6 @@ func (s *AuthService) UpdateUser(user data.User) error {
 	return s.repo.UpdateUser(user)
 }
 
-func (s *AuthService) GetUser(username, password string) (*data.User, error) {
-	return s.repo.GetUser(username, password)
+func (s *AuthService) GetUser(email, password string) (*data.User, error) {
+	return s.repo.GetUser(email, password)
 }

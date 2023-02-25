@@ -10,7 +10,7 @@ type User struct {
 	Email            string  `json:"email" db:"email" binding:"required"`
 	Password         string  `json:"password" db:"password" binding:"required"`
 	FullName         string  `json:"full_name" db:"full_name" binding:"required"`
-	SubscriptionType int     `json:"subscription_type" db:"subscription_type" binding:"required"`
-	Photo            string  `json:"phone" db:"phone" binding:"required"`
-	Rating           float64 `json:"rating" db:"rating" binding:"required"`
+	SubscriptionType int     `json:"subscription_type" db:"subscription_type"`
+	Photo            string  `json:"photo" db:"photo"`
+	Rating           float64 `json:"rating" db:"rating"`
 }
