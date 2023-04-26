@@ -25,7 +25,7 @@ func (h *Handler) getDebtById(c *gin.Context) {
 		return
 	}
 	id, _ := c.Get(userCtx)
-	if debt.LenderId != id && debt.DebtorID != id {
+	if debt.LenderId != id && debt.DebtorId != id {
 		newErrorResponse(c, http.StatusMethodNotAllowed, "you cannot get information on debt with this id")
 		return
 	}
@@ -40,8 +40,8 @@ func (h *Handler) createDebt(c *gin.Context) {
 	}
 	id, _ := c.Get(userCtx)
 
-	if id != debt.DebtorID {
-		newErrorResponse(c, http.StatusUnauthorized, "you are not a debtor in this debt")
+	if id != debt.LenderId {
+		newErrorResponse(c, http.StatusUnauthorized, "you are not a lender of this debt")
 		return
 	}
 	id, err := h.services.Debt.CreateDebt(debt)
@@ -112,8 +112,8 @@ func (h *Handler) activateDebt(c *gin.Context) {
 	}
 
 	id, _ := c.Get(userCtx)
-	if debt.LenderId != id {
-		newErrorResponse(c, http.StatusMethodNotAllowed, "you are not a lender of this debt")
+	if debt.DebtorId != id {
+		newErrorResponse(c, http.StatusMethodNotAllowed, "you are not a debtor of this debt")
 		return
 	}
 
@@ -123,6 +123,57 @@ func (h *Handler) activateDebt(c *gin.Context) {
 	}
 
 	err = h.services.Debt.UpdateStatus(debtId, data.DebtStatusActive)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	debtor, err := h.services.CurrentDebt.GetAllCurrentDebts(&debt.DebtorId, &debt.LenderId, nil)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	lender, err := h.services.CurrentDebt.GetAllCurrentDebts(&debt.LenderId, &debt.DebtorId, nil)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if debtor != nil {
+		newAmountDebtor := debtor[0].Amount + debt.Amount
+		err = h.services.CurrentDebt.UpdateAmount(debtor[0].Id, newAmountDebtor)
+		if err != nil {
+			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		newAmountLender := lender[0].Amount - debt.Amount
+		err = h.services.CurrentDebt.UpdateAmount(lender[0].Id, newAmountLender)
+		if err != nil {
+			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+		c.JSON(http.StatusNoContent, nil)
+		return
+	}
+
+	newCurrenDebt := data.CurrentDebts{
+		DebtorID: debt.DebtorId,
+		LenderId: debt.LenderId,
+		Amount:   debt.Amount,
+	}
+	_, err = h.services.CurrentDebt.CreateCurrentDebt(newCurrenDebt)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	newCurrenDebtReverse := data.CurrentDebts{
+		DebtorID: debt.LenderId,
+		LenderId: debt.DebtorId,
+		Amount:   -debt.Amount,
+	}
+	_, err = h.services.CurrentDebt.CreateCurrentDebt(newCurrenDebtReverse)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -150,7 +201,7 @@ func (h *Handler) closeDebt(c *gin.Context) {
 	}
 
 	id, _ := c.Get(userCtx)
-	if debt.DebtorID != id {
+	if debt.DebtorId != id {
 		newErrorResponse(c, http.StatusMethodNotAllowed, "you are not a debtor of this debt")
 		return
 	}
@@ -187,8 +238,8 @@ func (h *Handler) deleteDebtById(c *gin.Context) {
 	}
 
 	id, _ := c.Get(userCtx)
-	if debt.DebtorID != id {
-		newErrorResponse(c, http.StatusMethodNotAllowed, "you are not a debtor of this debt")
+	if debt.DebtorId != id && debt.LenderId != id {
+		newErrorResponse(c, http.StatusMethodNotAllowed, "you are not a debtor or lender of this debt")
 		return
 	}
 

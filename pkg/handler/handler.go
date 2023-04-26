@@ -24,6 +24,12 @@ func (h *Handler) InitRouters() *gin.Engine {
 
 	api := router.Group("/api", h.userIdentity)
 	{
+		users := api.Group("/users")
+		{
+			users.GET("/", h.getAllUsers)
+			users.PATCH("/:id", h.updateUser)
+			users.GET("/:id", h.getUserById)
+		}
 		debts := api.Group("/debts")
 		{
 			debts.POST("/", h.createDebt)
@@ -33,11 +39,9 @@ func (h *Handler) InitRouters() *gin.Engine {
 			debts.POST("/activate/:id", h.activateDebt)
 			debts.POST("/close/:id", h.closeDebt)
 		}
-		users := api.Group("/users")
+		currentDebts := api.Group("/current-debts")
 		{
-			users.GET("/", h.getAllUsers)
-			users.PATCH("/:id", h.updateUser)
-			users.GET("/:id", h.getUserById)
+			currentDebts.GET("/", h.getAllCurrentDebts)
 		}
 	}
 	return router

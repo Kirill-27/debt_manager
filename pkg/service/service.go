@@ -25,14 +25,23 @@ type Debt interface {
 	DeleteDebt(debtId int) error
 }
 
+type CurrentDebt interface {
+	CreateCurrentDebt(debt data.CurrentDebts) (int, error)
+	GetAllCurrentDebts(debtorId *int, lenderId *int, sortBy []string) ([]data.CurrentDebts, error)
+	UpdateAmount(id int, amount int) error
+	DeleteCurrentDebt(debtId int) error
+}
+
 type Service struct {
 	Authorization
 	Debt
+	CurrentDebt
 }
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos),
 		Debt:          NewDebtService(repos),
+		CurrentDebt:   NewCurrentDebtService(repos),
 	}
 }

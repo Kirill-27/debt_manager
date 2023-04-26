@@ -21,14 +21,23 @@ type Debt interface {
 	DeleteDebt(debtId int) error
 }
 
+type CurrentDebt interface {
+	CreateCurrentDebt(debt data.CurrentDebts) (int, error)
+	GetAllCurrentDebts(debtorId *int, lenderId *int, sortBy []string) ([]data.CurrentDebts, error)
+	UpdateAmount(id int, amount int) error
+	DeleteCurrentDebt(debtId int) error
+}
+
 type Repository struct {
 	Authorization
 	Debt
+	CurrentDebt
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		Authorization: NewAuthPostgres(db),
 		Debt:          NewDebtPostgres(db),
+		CurrentDebt:   NewCurrentDebtPostgres(db),
 	}
 }
