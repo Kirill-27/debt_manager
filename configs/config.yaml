@@ -1,0 +1,9 @@
+port: 8002
+
+db:
+  username: "debts"
+  host: "localhost"
+  port: "5435"
+  dbname: "debts"
+  sslmode: "disable"
+  password: "debts"

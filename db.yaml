@@ -1,0 +1,19 @@
+version: '3.3'
+
+services:
+
+ db:
+  image: postgres
+  restart: always
+  environment:
+   POSTGRES_USER: debts
+   POSTGRES_PASSWORD: debts
+   POSTGRES_DB: debts
+  ports:
+   - "5435:5432"
+
+# adminer:
+#  image: adminer
+#  restart: always
+#  ports:
+#   - 8007:8080
