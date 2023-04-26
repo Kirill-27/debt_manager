@@ -46,11 +46,11 @@ func (r *AuthPostgres) GetUser(email, password string) (*data.User, error) {
 }
 
 func (r *AuthPostgres) GetUserById(id int) (*data.User, error) {
-	var customer data.User
+	var user data.User
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1", usersTable)
-	err := r.db.Get(&customer, query, id)
+	err := r.db.Get(&user, query, id)
 
-	return &customer, err
+	return &user, err
 }
 
 func (r *AuthPostgres) UpdateUser(user data.User) error {

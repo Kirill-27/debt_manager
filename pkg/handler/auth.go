@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kirill-27/debt_manager/data"
 	"net/http"
+	"strconv"
 )
 
 // @Summary SignUp
@@ -63,7 +64,7 @@ func (h *Handler) signIn(c *gin.Context) {
 		return
 	}
 
-	token, err := h.services.Authorization.GenerateToken(input.Email, input.Password)
+	userId, token, err := h.services.Authorization.GenerateToken(input.Email, input.Password)
 	if err != nil {
 		status := http.StatusInternalServerError
 		if err.Error() == errors.New("wrong email or password").Error() {
@@ -74,6 +75,40 @@ func (h *Handler) signIn(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"token": token,
+		"token":   token,
+		"user_id": userId,
 	})
+}
+
+func (h *Handler) getAllUsers(c *gin.Context) {
+
+}
+
+func (h *Handler) updateUser(c *gin.Context) {
+
+}
+
+func (h *Handler) getUserById(c *gin.Context) {
+	userId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
+		return
+	}
+
+	user, err := h.services.Authorization.GetUserById(userId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if user == nil {
+		newErrorResponse(c, http.StatusNotFound, "user with this id was not found")
+		return
+	}
+	// todo not show rating if it requested by not premium user
+	id, _ := c.Get(userCtx)
+	if id != user.Id {
+		user.Password = ""
+		user.Email = ""
+	}
+	c.JSON(http.StatusOK, *user)
 }

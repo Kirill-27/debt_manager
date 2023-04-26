@@ -35,13 +35,13 @@ func (s *AuthService) CreateUser(user data.User) (int, error) {
 	return s.repo.CreateUser(user)
 }
 
-func (s *AuthService) GenerateToken(email, password string) (string, error) {
+func (s *AuthService) GenerateToken(email, password string) (int, string, error) {
 	user, err := s.repo.GetUser(email, generatePasswordHash(password))
 	if err != nil {
-		return "", err
+		return 0, "", err
 	}
 	if user == nil {
-		return "", errors.New("wrong username or password")
+		return 0, "", errors.New("wrong username or password")
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
@@ -51,8 +51,8 @@ func (s *AuthService) GenerateToken(email, password string) (string, error) {
 		},
 		user.Id,
 	})
-
-	return token.SignedString([]byte(signingKey))
+	tokenString, err := token.SignedString([]byte(signingKey))
+	return user.Id, tokenString, err
 }
 
 func (s *AuthService) ParseToken(accessToken string) (int, error) {
