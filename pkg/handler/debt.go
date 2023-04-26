@@ -100,8 +100,40 @@ func (h *Handler) updateDebt(c *gin.Context) {
 }
 
 func (h *Handler) deleteDebtById(c *gin.Context) {
+	debtId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
+		return
+	}
+
+	debt, err := h.services.Debt.GetDebtById(debtId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if debt == nil {
+		newErrorResponse(c, http.StatusNotFound, "debt with this id was not found")
+		return
+	}
+
 	id, _ := c.Get(userCtx)
-	c.JSON(http.StatusOK, id)
+	if debt.LenderId != id && debt.DebtorID != id {
+		newErrorResponse(c, http.StatusMethodNotAllowed, "you are not a debtor of this debt")
+		return
+	}
+
+	if debt.Status != data.DebtStatusPendingActive {
+		newErrorResponse(c, http.StatusMethodNotAllowed, "this debt is no longer in pending status")
+		return
+	}
+
+	err = h.services.Debt.DeleteDebt(debtId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusNoContent, nil)
 }
 
 func makeFilter(value string) string {

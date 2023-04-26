@@ -103,5 +103,8 @@ func (d *DebtPostgres) UpdateDebt(debt data.Debt) error {
 	return nil
 }
 func (d *DebtPostgres) DeleteDebt(debtId int) error {
-	return nil
+	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", debtsTable)
+	_, err := d.db.Exec(query, debtId)
+	return err
+
 }

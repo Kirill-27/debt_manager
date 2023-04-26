@@ -3,11 +3,10 @@ package data
 import "time"
 
 const (
-	StatusPendingActive = iota + 1
-	StatusActive
-	StatusPendingClosed
-	StatusClosed
-	StatusDeleted
+	DebtStatusPendingActive = iota + 1
+	DebtStatusActive
+	DebtStatusClosed
+	DebtStatusDeleted
 )
 
 type Debt struct {
