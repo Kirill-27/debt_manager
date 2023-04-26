@@ -8,6 +8,7 @@ import (
 	"github.com/kirill-27/debt_manager/requests"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 // @Summary SignUp
@@ -84,8 +85,47 @@ func (h *Handler) signIn(c *gin.Context) {
 	})
 }
 
+// todo add permission check
 func (h *Handler) getAllUsers(c *gin.Context) {
+	var sorts []string
 
+	sortAmount := c.Query("sort")
+	if sortAmount != "" {
+		sorts = strings.Split(sortAmount, ",")
+	}
+
+	users, err := h.services.Authorization.GetAllUsers(sorts)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	id, _ := c.Get(userCtx)
+	idValue, _ := id.(int)
+	requester, err := h.services.Authorization.GetUserById(idValue)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if requester == nil {
+		newErrorResponse(c, http.StatusNotFound, "wrong id in auth token")
+		return
+	}
+
+	for index := range users {
+		users[index].Password = ""
+	}
+	if requester.SubscriptionType == data.SubscriptionTypeFree {
+		for index := range users {
+			users[index].Rating = 0
+		}
+	}
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, users)
 }
 
 func (h *Handler) updateUser(c *gin.Context) {
@@ -141,11 +181,22 @@ func (h *Handler) getUserById(c *gin.Context) {
 		newErrorResponse(c, http.StatusNotFound, "user with this id was not found")
 		return
 	}
-	// todo not show rating if it requested by not premium user
 	id, _ := c.Get(userCtx)
 	if id != user.Id {
 		user.Password = ""
-		user.Email = ""
+		idValue, _ := id.(int)
+		requester, err := h.services.Authorization.GetUserById(idValue)
+		if err != nil {
+			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+		if requester == nil {
+			newErrorResponse(c, http.StatusNotFound, "wrong id in auth token")
+			return
+		}
+		if requester.SubscriptionType == data.SubscriptionTypeFree {
+			user.Rating = 0
+		}
 	}
 	c.JSON(http.StatusOK, *user)
 }

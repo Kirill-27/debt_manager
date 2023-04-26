@@ -82,3 +82,7 @@ func (s *AuthService) UpdateUser(user data.User) error {
 func (s *AuthService) GetUser(email, password string) (*data.User, error) {
 	return s.repo.GetUser(email, password)
 }
+
+func (s *AuthService) GetAllUsers(sortBy []string) ([]data.User, error) {
+	return s.repo.GetAllUsers(sortBy)
+}

@@ -35,14 +35,51 @@ func (r *AuthPostgres) CreateUser(user data.User) (int, error) {
 }
 
 func (r *AuthPostgres) GetUser(email, password string) (*data.User, error) {
-	var customer data.User
+	var user data.User
 	query := fmt.Sprintf("SELECT id FROM %s WHERE email=$1 AND password=$2", usersTable)
-	err := r.db.Get(&customer, query, email, password)
+	err := r.db.Get(&user, query, email, password)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
 
-	return &customer, err
+	return &user, err
+}
+
+func (r *AuthPostgres) GetAllUsers(sortBy []string) ([]data.User, error) {
+	query := fmt.Sprintf("SELECT * FROM %s ", usersTable)
+
+	var params []interface{}
+
+	if len(sortBy) != 0 {
+		query += fmt.Sprintf(" ORDER BY ")
+		for index, value := range sortBy {
+			if index > 0 {
+				query += ", "
+			}
+			if value[0] == '-' {
+				query += value[1:] + " DESC"
+			} else {
+				query += value
+			}
+		}
+	}
+
+	rows, err := r.db.Queryx(query, params...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []data.User
+	for rows.Next() {
+		var user data.User
+		if err := rows.StructScan(&user); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
 }
 
 func (r *AuthPostgres) GetUserById(id int) (*data.User, error) {

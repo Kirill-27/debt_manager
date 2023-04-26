@@ -8,6 +8,7 @@ import (
 //go:generate mockgen -source=service.go -destination=mocks/mock.go
 
 type Authorization interface {
+	GetAllUsers(sortBy []string) ([]data.User, error)
 	GetUserById(id int) (*data.User, error)
 	UpdateUser(user data.User) error
 	CreateUser(user data.User) (int, error)
