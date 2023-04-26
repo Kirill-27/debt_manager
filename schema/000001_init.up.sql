@@ -23,8 +23,8 @@ CREATE TABLE debts
 
 CREATE TABLE friends
 (
-    friend1_id  int not null,
-    friend2_id  int not null
+    my_id  int not null,
+    friend_id  int not null
 );
 
 CREATE TABLE current_debts
@@ -38,11 +38,11 @@ CREATE TABLE current_debts
 CREATE TABLE reviews
 (
     id serial not null unique,
-    debtor_id  int not null,
+    reviewer_id  int not null,
     lender_id  int not null,
     comment text not null,
     rate  int not null,
-    created_at timestamp without time zone default (now() at time zone 'utc')
+    updated_at timestamp without time zone default (now() at time zone 'utc')
 );
 
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
