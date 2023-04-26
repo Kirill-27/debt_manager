@@ -23,8 +23,8 @@ func (s *DebtService) GetAllDebts(debtorId *int, lenderId *int, sortBy []string)
 func (s *DebtService) GetDebtById(debtId int) (*data.Debt, error) {
 	return s.repo.GetDebtById(debtId)
 }
-func (s *DebtService) UpdateDebt(debt data.Debt) error {
-	return s.repo.UpdateDebt(debt)
+func (s *DebtService) UpdateStatus(id int, status int) error {
+	return s.repo.UpdateStatus(id, status)
 }
 func (s *DebtService) DeleteDebt(debtId int) error {
 	return s.repo.DeleteDebt(debtId)

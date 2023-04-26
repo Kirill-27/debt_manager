@@ -28,14 +28,15 @@ func (h *Handler) InitRouters() *gin.Engine {
 		{
 			debts.POST("/", h.createDebt)
 			debts.GET("/", h.getAllDebts)
-			debts.PUT("/:id", h.updateDebt)
 			debts.GET("/:id", h.getDebtById)
 			debts.DELETE("/:id", h.deleteDebtById)
+			debts.POST("/activate/:id", h.activateDebt)
+			debts.POST("/close/:id", h.closeDebt)
 		}
 		users := api.Group("/users")
 		{
 			users.GET("/", h.getAllUsers)
-			users.PUT("/:id", h.updateUser)
+			users.PATCH("/:id", h.updateUser)
 			users.GET("/:id", h.getUserById)
 		}
 	}

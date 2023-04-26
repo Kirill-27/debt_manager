@@ -88,7 +88,6 @@ func (d *DebtPostgres) GetAllDebts(debtorId *int,
 	return debts, nil
 }
 
-// todo handle sql: no rows in result set
 func (d *DebtPostgres) GetDebtById(debtId int) (*data.Debt, error) {
 	var debt data.Debt
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1", debtsTable)
@@ -99,9 +98,15 @@ func (d *DebtPostgres) GetDebtById(debtId int) (*data.Debt, error) {
 	}
 	return &debt, err
 }
-func (d *DebtPostgres) UpdateDebt(debt data.Debt) error {
-	return nil
+func (d *DebtPostgres) UpdateStatus(id int, status int) error {
+	query := fmt.Sprintf(
+		"UPDATE %s SET status=$2 WHERE id=$1 ",
+		debtsTable)
+
+	_, err := d.db.Exec(query, id, status)
+	return err
 }
+
 func (d *DebtPostgres) DeleteDebt(debtId int) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", debtsTable)
 	_, err := d.db.Exec(query, debtId)
