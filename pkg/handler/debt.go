@@ -55,7 +55,7 @@ func (h *Handler) createDebt(c *gin.Context) {
 	})
 }
 
-// add validation user can see debt where he is debtor or lender
+// todo add validation user can see debt where he is debtor or lender
 func (h *Handler) getAllDebts(c *gin.Context) {
 	//id, _ := c.Get(userCtx)
 	filterDebtor := c.Query(makeFilter("debtor_id"))
@@ -180,7 +180,6 @@ func (h *Handler) activateDebt(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusNoContent, nil)
-
 }
 
 func (h *Handler) closeDebt(c *gin.Context) {
