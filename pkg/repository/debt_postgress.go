@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/kirill-27/debt_manager/data"
@@ -93,6 +94,9 @@ func (d *DebtPostgres) GetDebtById(debtId int) (*data.Debt, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1", debtsTable)
 	err := d.db.Get(&debt, query, debtId)
 
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
 	return &debt, err
 }
 func (d *DebtPostgres) UpdateDebt(debt data.Debt) error {

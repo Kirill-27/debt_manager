@@ -4,6 +4,8 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/kirill-27/debt_manager/data"
+	"github.com/kirill-27/debt_manager/helpers"
+	"github.com/kirill-27/debt_manager/requests"
 	"net/http"
 	"strconv"
 )
@@ -28,6 +30,8 @@ func (h *Handler) signUp(c *gin.Context) {
 		return
 	}
 
+	input.SubscriptionType = data.SubscriptionTypeFree
+	input.Password = helpers.GeneratePasswordHash(input.Password)
 	id, err := h.services.Authorization.CreateUser(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -85,7 +89,40 @@ func (h *Handler) getAllUsers(c *gin.Context) {
 }
 
 func (h *Handler) updateUser(c *gin.Context) {
+	userId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
+		return
+	}
 
+	id, _ := c.Get(userCtx)
+	if id != userId {
+		newErrorResponse(c, http.StatusMethodNotAllowed, "you can not change info about user with such id")
+		return
+	}
+
+	var fieldsToUpdate requests.UpdateUser
+	if err := c.BindJSON(&fieldsToUpdate); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	user, err := h.services.Authorization.GetUserById(userId)
+	if user == nil {
+		newErrorResponse(c, http.StatusNotFound, "there is not user with such id")
+		return
+	}
+	user.FullName = fieldsToUpdate.FullName
+	user.Photo = fieldsToUpdate.Photo
+	user.Email = fieldsToUpdate.Email
+	user.Password = helpers.GeneratePasswordHash(fieldsToUpdate.Password)
+
+	err = h.services.Authorization.UpdateUser(*user)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusNoContent, nil)
 }
 
 func (h *Handler) getUserById(c *gin.Context) {

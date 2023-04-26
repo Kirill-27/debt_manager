@@ -49,12 +49,19 @@ func (r *AuthPostgres) GetUserById(id int) (*data.User, error) {
 	var user data.User
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1", usersTable)
 	err := r.db.Get(&user, query, id)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
 
 	return &user, err
 }
 
 func (r *AuthPostgres) UpdateUser(user data.User) error {
-	//query := fmt.Sprintf("UPDATE %s SET name=$1, password=$2, username=$3, email=$4, phone=$5   WHERE id=$6 ", customersTable)
-	//_, err := r.db.Exec(query, customer.Name, customer.Password, customer.Username, customer.Email, customer.Phone, customer.Id)
-	return nil
+	query := fmt.Sprintf(
+		"UPDATE %s SET email=$2, password=$3, full_name=$4, subscription_type=$5, photo=$6, rating=$7 WHERE id=$1 ",
+		usersTable)
+
+	_, err := r.db.Exec(query, user.Id, user.Email, user.Password, user.FullName,
+		user.SubscriptionType, user.Photo, user.Rating)
+	return err
 }

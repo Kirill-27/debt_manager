@@ -1,11 +1,10 @@
 package service
 
 import (
-	"crypto/sha1"
 	"errors"
-	"fmt"
 	"github.com/golang-jwt/jwt"
 	"github.com/kirill-27/debt_manager/data"
+	"github.com/kirill-27/debt_manager/helpers"
 	"github.com/kirill-27/debt_manager/pkg/repository"
 	"time"
 )
@@ -13,7 +12,6 @@ import (
 const (
 	signingKey = "dfvjdfv@21#@d(q*Djdsdf"
 	tokenTTL   = 60 * 24 * time.Hour
-	salt       = "h0q12hqw124f17ajf3ajs"
 )
 
 type tokenClaims struct {
@@ -30,13 +28,11 @@ func NewAuthService(repo repository.Authorization) *AuthService {
 }
 
 func (s *AuthService) CreateUser(user data.User) (int, error) {
-	user.SubscriptionType = data.SubscriptionTypeFree
-	user.Password = generatePasswordHash(user.Password)
 	return s.repo.CreateUser(user)
 }
 
 func (s *AuthService) GenerateToken(email, password string) (int, string, error) {
-	user, err := s.repo.GetUser(email, generatePasswordHash(password))
+	user, err := s.repo.GetUser(email, helpers.GeneratePasswordHash(password))
 	if err != nil {
 		return 0, "", err
 	}
@@ -73,13 +69,6 @@ func (s *AuthService) ParseToken(accessToken string) (int, error) {
 	}
 
 	return claims.UserId, nil
-}
-
-func generatePasswordHash(password string) string {
-	hash := sha1.New()
-	hash.Write([]byte(password))
-
-	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
 }
 
 func (s *AuthService) GetUserById(id int) (*data.User, error) {
