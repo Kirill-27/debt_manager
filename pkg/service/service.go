@@ -32,10 +32,18 @@ type CurrentDebt interface {
 	DeleteCurrentDebt(debtId int) error
 }
 
+type Review interface {
+	GetReviewById(id int) (*data.Review, error)
+	GetAllReviews(reviewerId *int, lenderId *int, sortBy []string) ([]data.Review, error)
+	UpdateReview(review data.Review) error
+	CreateReview(review data.Review) (int, error)
+}
+
 type Service struct {
 	Authorization
 	Debt
 	CurrentDebt
+	Review
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -43,5 +51,6 @@ func NewService(repos *repository.Repository) *Service {
 		Authorization: NewAuthService(repos),
 		Debt:          NewDebtService(repos),
 		CurrentDebt:   NewCurrentDebtService(repos),
+		Review:        NewReviewService(repos),
 	}
 }

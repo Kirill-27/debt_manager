@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/kirill-27/debt_manager/data"
+	"github.com/kirill-27/debt_manager/helpers"
 )
 
 type AuthPostgres struct {
@@ -50,17 +51,7 @@ func (r *AuthPostgres) GetAllUsers(sortBy []string) ([]data.User, error) {
 	var params []interface{}
 
 	if len(sortBy) != 0 {
-		query += fmt.Sprintf(" ORDER BY ")
-		for index, value := range sortBy {
-			if index > 0 {
-				query += ", "
-			}
-			if value[0] == '-' {
-				query += value[1:] + " DESC"
-			} else {
-				query += value
-			}
-		}
+		query += helpers.ParseSortBy(sortBy)
 	}
 
 	rows, err := r.db.Queryx(query, params...)

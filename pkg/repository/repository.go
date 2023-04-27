@@ -28,10 +28,18 @@ type CurrentDebt interface {
 	DeleteCurrentDebt(debtId int) error
 }
 
+type Review interface {
+	GetReviewById(id int) (*data.Review, error)
+	GetAllReviews(reviewerId *int, lenderId *int, sortBy []string) ([]data.Review, error)
+	UpdateReview(review data.Review) error
+	CreateReview(review data.Review) (int, error)
+}
+
 type Repository struct {
 	Authorization
 	Debt
 	CurrentDebt
+	Review
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -39,5 +47,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		Authorization: NewAuthPostgres(db),
 		Debt:          NewDebtPostgres(db),
 		CurrentDebt:   NewCurrentDebtPostgres(db),
+		Review:        NewReviewPostgres(db),
 	}
 }

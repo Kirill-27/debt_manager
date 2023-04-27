@@ -8,5 +8,5 @@ type Review struct {
 	LenderId   int       `json:"lender_id" db:"lender_id" binding:"required"`
 	Comment    string    `json:"comment" db:"comment" binding:"required"`
 	Rate       int       `json:"rate" db:"rate" binding:"required"`
-	UpdatedAt  time.Time `json:"updated_at" db:"updated_at" binding:"required"`
+	UpdatedAt  time.Time `json:"updated_at" db:"updated_at"`
 }
