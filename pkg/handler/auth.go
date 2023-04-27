@@ -82,14 +82,21 @@ func (h *Handler) signIn(c *gin.Context) {
 
 // todo add permission check
 func (h *Handler) getAllUsers(c *gin.Context) {
-	var sorts []string
+	filterMyFriends := c.Query(makeFilter("my_friends"))
+	var friendsFor *int
+	if filterMyFriends == "true" {
+		id, _ := c.Get(userCtx)
+		intId, _ := id.(int)
+		friendsFor = &intId
+	}
 
+	var sorts []string
 	sortAmount := c.Query("sort")
 	if sortAmount != "" {
 		sorts = strings.Split(sortAmount, ",")
 	}
 
-	users, err := h.services.Authorization.GetAllUsers(sorts)
+	users, err := h.services.Authorization.GetAllUsers(sorts, friendsFor)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

@@ -6,6 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/kirill-27/debt_manager/data"
 	"github.com/kirill-27/debt_manager/helpers"
+	"strconv"
 )
 
 type AuthPostgres struct {
@@ -45,10 +46,16 @@ func (r *AuthPostgres) GetUser(email, password string) (*data.User, error) {
 	return &user, err
 }
 
-func (r *AuthPostgres) GetAllUsers(sortBy []string) ([]data.User, error) {
-	query := fmt.Sprintf("SELECT * FROM %s ", usersTable)
+func (r *AuthPostgres) GetAllUsers(sortBy []string, friendsFor *int) ([]data.User, error) {
+	query := fmt.Sprintf("SELECT %s.* FROM %s ", usersTable, usersTable)
 
 	var params []interface{}
+
+	if friendsFor != nil {
+		query += fmt.Sprintf("LEFT JOIN %s on %s.id =  %s.friend_id ", friendsTable, usersTable, friendsTable) +
+			fmt.Sprintf("WHERE %s.my_id = $", friendsTable) + strconv.Itoa(len(params)+1)
+		params = append(params, *friendsFor)
+	}
 
 	if len(sortBy) != 0 {
 		query += helpers.ParseSortBy(sortBy)

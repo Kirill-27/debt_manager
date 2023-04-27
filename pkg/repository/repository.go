@@ -10,7 +10,7 @@ type Authorization interface {
 	UpdateUser(user data.User) error
 	CreateUser(user data.User) (int, error)
 	GetUser(email, password string) (*data.User, error)
-	GetAllUsers(sortBy []string) ([]data.User, error)
+	GetAllUsers(sortBy []string, friendsFor *int) ([]data.User, error)
 }
 
 type Debt interface {
