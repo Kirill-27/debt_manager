@@ -11,7 +11,7 @@ const (
 type Debt struct {
 	Id          int       `json:"id" db:"id"`
 	DebtorId    int       `json:"debtor_id" db:"debtor_id" binding:"required"`
-	LenderId    int       `json:"lender_id" db:"lender_id" binding:"required"`
+	LenderId    int       `json:"lender_id" db:"lender_id"`
 	Status      int       `json:"status" db:"status" `
 	Amount      int       `json:"amount" db:"amount" binding:"required"`
 	Description string    `json:"description" db:"description" binding:"required"`

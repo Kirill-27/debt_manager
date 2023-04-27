@@ -40,11 +40,9 @@ func (h *Handler) createDebt(c *gin.Context) {
 		return
 	}
 	id, _ := c.Get(userCtx)
-
-	if id != debt.LenderId {
-		newErrorResponse(c, http.StatusUnauthorized, "you are not a lender of this debt")
-		return
-	}
+	idValue, _ := id.(int)
+	debt.LenderId = idValue
+	
 	id, err := h.services.Debt.CreateDebt(debt)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())

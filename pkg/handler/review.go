@@ -18,8 +18,23 @@ func (h *Handler) createReview(c *gin.Context) {
 		return
 	}
 
-	id, _ := c.Get(userCtx)
-	idValue, _ := id.(int)
+	reviewerId, _ := c.Get(userCtx)
+	idValue, _ := reviewerId.(int)
+	user, err := h.services.Authorization.GetUserById(review.LenderId)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	if user == nil {
+		newErrorResponse(c, http.StatusBadRequest, "lender with such id does not exist")
+		return
+	}
+
+	reviews, err := h.services.Review.GetAllReviews(&idValue, &review.LenderId, nil)
+	if reviews != nil {
+		newErrorResponse(c, http.StatusBadRequest, "review for this user already exist")
+		return
+	}
 	review.ReviewerId = idValue
 
 	id, err := h.services.Review.CreateReview(review)
