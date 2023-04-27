@@ -38,7 +38,7 @@ func (r *ReviewPostgres) UpdateReview(review data.Review) error {
 func (r *ReviewPostgres) CreateReview(review data.Review) (int, error) {
 	var id int
 	query := fmt.Sprintf("INSERT INTO %s (reviewer_id, lender_id, comment, rate)"+
-		" values ($1, $2, $3, $4, $5) RETURNING id", reviewsTable)
+		" values ($1, $2, $3, $4) RETURNING id", reviewsTable)
 
 	row := r.db.QueryRow(query,
 		review.ReviewerId,

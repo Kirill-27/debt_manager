@@ -5,16 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1510878e-4c5f-4281-8d87-cd3965ca00dd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/helpers/parse_sort_by.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/repository/review_postgress.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/service/review.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/handler/review.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/review.go" beforeDir="false" afterPath="$PROJECT_DIR$/data/review.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/repository/auth_postgress.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/repository/auth_postgress.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/repository/current_debt_postgress.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/repository/current_debt_postgress.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/repository/debt_postgress.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/repository/debt_postgress.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/repository/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/repository/repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/service/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/handler/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/handler.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
