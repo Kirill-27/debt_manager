@@ -6,20 +6,37 @@ import (
 	"strconv"
 )
 
-// todo add validation check if exist such user, cant add yourself and if you are already friends
 func (h *Handler) addFriend(c *gin.Context) {
 	friendId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
 		return
 	}
+
 	id, _ := c.Get(userCtx)
+	if id == friendId {
+		newErrorResponse(c, http.StatusBadRequest, "you can not add yourself as a friend")
+		return
+	}
+
+	newFriend, err := h.services.Authorization.GetUserById(friendId)
+	if newFriend == nil {
+		newErrorResponse(c, http.StatusBadRequest, "there are no users with such id")
+		return
+	}
+
 	intId, _ := id.(int)
+	ifExist, err := h.services.Friends.CheckIfFriendExists(intId, friendId)
+	if ifExist {
+		newErrorResponse(c, http.StatusBadRequest, "you already added this friend")
+		return
+	}
 
 	err = h.services.Friends.AddFriend(intId, friendId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
+
 	c.JSON(http.StatusOK, nil)
 }

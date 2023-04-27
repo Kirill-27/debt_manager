@@ -41,6 +41,7 @@ type Review interface {
 
 type Friends interface {
 	AddFriend(myId int, friendId int) error
+	CheckIfFriendExists(myId int, friendId int) (bool, error)
 }
 
 type Service struct {
