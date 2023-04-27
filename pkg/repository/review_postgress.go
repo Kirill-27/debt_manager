@@ -29,9 +29,9 @@ func (r *ReviewPostgres) GetReviewById(id int) (*data.Review, error) {
 }
 
 func (r *ReviewPostgres) UpdateReview(review data.Review) error {
-	query := fmt.Sprintf("UPDATE %s SET comment=$2, rate=$3,  WHERE id=$1 ", reviewsTable)
+	query := fmt.Sprintf("UPDATE %s SET comment=$2, rate=$3 WHERE id=$1 ", reviewsTable)
 
-	_, err := r.db.Exec(query, review.Comment, review.Rate)
+	_, err := r.db.Exec(query, review.Id, review.Comment, review.Rate)
 	return err
 }
 
@@ -53,7 +53,7 @@ func (r *ReviewPostgres) CreateReview(review data.Review) (int, error) {
 }
 
 func (r *ReviewPostgres) GetAllReviews(reviewerId *int, lenderId *int, sortBy []string) ([]data.Review, error) {
-	query := fmt.Sprintf("SELECT * FROM %s ", currentDebtsTable)
+	query := fmt.Sprintf("SELECT * FROM %s ", reviewsTable)
 	if reviewerId != nil || lenderId != nil {
 		query += "WHERE "
 	}

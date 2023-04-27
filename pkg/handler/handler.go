@@ -48,6 +48,7 @@ func (h *Handler) InitRouters() *gin.Engine {
 		{
 			reviews.POST("/", h.createReview)
 			reviews.GET("/", h.getAllReviews)
+			reviews.PATCH("/:id", h.updateReview)
 		}
 	}
 	return router
