@@ -249,11 +249,17 @@ func (h *Handler) closeDebt(c *gin.Context) {
 		&debt.DebtorId, &debt.LenderId, strconv.Itoa(data.DebtStatusActive), nil)
 
 	if newAmountDebtor == 0 && newAmountLender == 0 && debtsForLenderAndDebtor == nil {
-
+		err = h.services.CurrentDebt.DeleteCurrentDebt(debtor[0].Id)
+		if err != nil {
+			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+		err = h.services.CurrentDebt.DeleteCurrentDebt(lender[0].Id)
+		if err != nil {
+			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
 	}
-
-	c.JSON(http.StatusNoContent, nil)
-	return
 
 	c.JSON(http.StatusNoContent, nil)
 }
