@@ -39,11 +39,16 @@ type Review interface {
 	CreateReview(review data.Review) (int, error)
 }
 
+type Friends interface {
+	AddFriend(myId int, friendId int) error
+}
+
 type Service struct {
 	Authorization
 	Debt
 	CurrentDebt
 	Review
+	Friends
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -52,5 +57,6 @@ func NewService(repos *repository.Repository) *Service {
 		Debt:          NewDebtService(repos),
 		CurrentDebt:   NewCurrentDebtService(repos),
 		Review:        NewReviewService(repos),
+		Friends:       NewFriendsService(repos),
 	}
 }

@@ -50,6 +50,10 @@ func (h *Handler) InitRouters() *gin.Engine {
 			reviews.GET("/", h.getAllReviews)
 			reviews.PATCH("/:id", h.updateReview)
 		}
+		friends := api.Group("/friends")
+		{
+			friends.POST("/:id", h.addFriend)
+		}
 	}
 	return router
 }

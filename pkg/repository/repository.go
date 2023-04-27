@@ -35,11 +35,16 @@ type Review interface {
 	CreateReview(review data.Review) (int, error)
 }
 
+type Friends interface {
+	AddFriend(myId int, friendId int) error
+}
+
 type Repository struct {
 	Authorization
 	Debt
 	CurrentDebt
 	Review
+	Friends
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -48,5 +53,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		Debt:          NewDebtPostgres(db),
 		CurrentDebt:   NewCurrentDebtPostgres(db),
 		Review:        NewReviewPostgres(db),
+		Friends:       NewFriendsPostgres(db),
 	}
 }
