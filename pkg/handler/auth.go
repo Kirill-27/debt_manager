@@ -23,6 +23,7 @@ import (
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
 // @Router /auth/sign-up [post]
+// todo check if this email is free
 func (h *Handler) signUp(c *gin.Context) {
 	var input data.User
 
@@ -31,7 +32,6 @@ func (h *Handler) signUp(c *gin.Context) {
 		return
 	}
 
-	input.SubscriptionType = data.SubscriptionTypeFree
 	input.Password = helpers.GeneratePasswordHash(input.Password)
 	id, err := h.services.Authorization.CreateUser(input)
 	if err != nil {

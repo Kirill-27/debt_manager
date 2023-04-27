@@ -6,7 +6,6 @@ const (
 	DebtStatusPendingActive = iota + 1
 	DebtStatusActive
 	DebtStatusClosed
-	DebtStatusDeleted
 )
 
 type Debt struct {

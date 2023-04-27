@@ -35,10 +35,11 @@ func (d *DebtPostgres) CreateDebt(debt data.Debt) (int, error) {
 
 func (d *DebtPostgres) GetAllDebts(debtorId *int,
 	lenderId *int,
+	statuses string,
 	sortBy []string) ([]data.Debt, error) {
 
 	query := fmt.Sprintf("SELECT * FROM %s ", debtsTable)
-	if debtorId != nil || lenderId != nil {
+	if debtorId != nil || lenderId != nil || statuses != "" {
 		query += "WHERE "
 	}
 	var params []interface{}
@@ -54,6 +55,14 @@ func (d *DebtPostgres) GetAllDebts(debtorId *int,
 		}
 		query += " lender_id = $" + strconv.Itoa(len(params)+1)
 		params = append(params, lenderId)
+	}
+
+	// it must be the last check for where statement
+	if statuses != "" {
+		if len(params) > 0 {
+			query += " AND "
+		}
+		query += " status IN (" + statuses + ")"
 	}
 
 	if len(sortBy) != 0 {

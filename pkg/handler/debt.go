@@ -32,6 +32,7 @@ func (h *Handler) getDebtById(c *gin.Context) {
 	c.JSON(http.StatusOK, *debt)
 }
 
+// todo check if such lender exist
 func (h *Handler) createDebt(c *gin.Context) {
 	var debt data.Debt
 	if err := c.BindJSON(&debt); err != nil {
@@ -78,6 +79,9 @@ func (h *Handler) getAllDebts(c *gin.Context) {
 		}
 		lenderId = &str
 	}
+
+	statuses := c.Query(makeFilter("status"))
+
 	var sorts []string
 
 	sortAmount := c.Query("sort")
@@ -85,7 +89,7 @@ func (h *Handler) getAllDebts(c *gin.Context) {
 		sorts = strings.Split(sortAmount, ",")
 	}
 
-	debts, err := h.services.Debt.GetAllDebts(debtorId, lenderId, sorts)
+	debts, err := h.services.Debt.GetAllDebts(debtorId, lenderId, statuses, sorts)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -215,6 +219,41 @@ func (h *Handler) closeDebt(c *gin.Context) {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
+
+	debtor, err := h.services.CurrentDebt.GetAllCurrentDebts(&debt.DebtorId, &debt.LenderId, nil)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	lender, err := h.services.CurrentDebt.GetAllCurrentDebts(&debt.LenderId, &debt.DebtorId, nil)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	newAmountDebtor := debtor[0].Amount - debt.Amount
+	err = h.services.CurrentDebt.UpdateAmount(debtor[0].Id, newAmountDebtor)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	newAmountLender := lender[0].Amount + debt.Amount
+	err = h.services.CurrentDebt.UpdateAmount(lender[0].Id, newAmountLender)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	debtsForLenderAndDebtor, err := h.services.Debt.GetAllDebts(
+		&debt.DebtorId, &debt.LenderId, strconv.Itoa(data.DebtStatusActive), nil)
+
+	if newAmountDebtor == 0 && newAmountLender == 0 && debtsForLenderAndDebtor == nil {
+
+	}
+
+	c.JSON(http.StatusNoContent, nil)
+	return
 
 	c.JSON(http.StatusNoContent, nil)
 }

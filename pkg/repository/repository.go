@@ -15,7 +15,7 @@ type Authorization interface {
 
 type Debt interface {
 	CreateDebt(debt data.Debt) (int, error)
-	GetAllDebts(debtorId *int, lenderId *int, sortBy []string) ([]data.Debt, error)
+	GetAllDebts(debtorId *int, lenderId *int, statuses string, sortBy []string) ([]data.Debt, error)
 	GetDebtById(debtId int) (*data.Debt, error)
 	UpdateStatus(id int, status int) error
 	DeleteDebt(debtId int) error
