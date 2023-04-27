@@ -45,18 +45,20 @@ CREATE TABLE reviews
     updated_at timestamp without time zone default (now() at time zone 'utc')
 );
 
-CREATE OR REPLACE FUNCTION trigger_set_timestamp()
-    RETURNS TRIGGER AS
-$$
+CREATE OR REPLACE FUNCTION update_debts_updated_at()
+    RETURNS TRIGGER AS $$
 BEGIN
-    NEW.updated_at = (now() at time zone 'utc');
+    NEW.updated_at = now() at time zone 'utc';
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER
-    update_debts_status
-    AFTER update
-    on debts
-    for EACH ROW
-EXECUTE PROCEDURE trigger_set_timestamp();
+CREATE TRIGGER update_debt_time
+    BEFORE UPDATE ON debts
+    FOR EACH ROW
+EXECUTE FUNCTION update_debts_updated_at();
+
+CREATE TRIGGER update_review_time
+    BEFORE UPDATE ON reviews
+    FOR EACH ROW
+EXECUTE FUNCTION update_debts_updated_at();
