@@ -184,8 +184,8 @@ func (h *Handler) getUserById(c *gin.Context) {
 		return
 	}
 	id, _ := c.Get(userCtx)
+	user.Password = ""
 	if id != user.Id {
-		user.Password = ""
 		idValue, _ := id.(int)
 		requester, err := h.services.Authorization.GetUserById(idValue)
 		if err != nil {
