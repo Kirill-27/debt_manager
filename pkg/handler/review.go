@@ -9,7 +9,6 @@ import (
 	"strings"
 )
 
-// todo make validation if there are closed debt for those 2 users
 func (h *Handler) createReview(c *gin.Context) {
 	var review data.Review
 	if err := c.BindJSON(&review); err != nil {
@@ -19,13 +18,11 @@ func (h *Handler) createReview(c *gin.Context) {
 
 	reviewerId, _ := c.Get(userCtx)
 	idValue, _ := reviewerId.(int)
-	user, err := h.services.Authorization.GetUserById(review.LenderId)
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-	if user == nil {
-		newErrorResponse(c, http.StatusBadRequest, "lender with such id does not exist")
+
+	debts, err := h.services.Debt.GetAllDebts(
+		&idValue, &review.LenderId, strconv.Itoa(data.DebtStatusClosed), nil)
+	if debts == nil {
+		newErrorResponse(c, http.StatusBadRequest, "you don't have any closed deals with lander with this id")
 		return
 	}
 
