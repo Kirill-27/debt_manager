@@ -32,7 +32,8 @@ func (s *AuthService) CreateUser(user data.User) (int, error) {
 }
 
 func (s *AuthService) GenerateToken(email, password string) (int, string, error) {
-	user, err := s.repo.GetUser(email, helpers.GeneratePasswordHash(password))
+	passwordHash := helpers.GeneratePasswordHash(password)
+	user, err := s.repo.GetUser(&email, &passwordHash)
 	if err != nil {
 		return 0, "", err
 	}
@@ -79,7 +80,7 @@ func (s *AuthService) UpdateUser(user data.User) error {
 	return s.repo.UpdateUser(user)
 }
 
-func (s *AuthService) GetUser(email, password string) (*data.User, error) {
+func (s *AuthService) GetUser(email, password *string) (*data.User, error) {
 	return s.repo.GetUser(email, password)
 }
 

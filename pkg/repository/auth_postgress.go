@@ -35,9 +35,13 @@ func (r *AuthPostgres) CreateUser(user data.User) (int, error) {
 	return id, nil
 }
 
-func (r *AuthPostgres) GetUser(email, password string) (*data.User, error) {
+func (r *AuthPostgres) GetUser(email, password *string) (*data.User, error) {
 	var user data.User
-	query := fmt.Sprintf("SELECT id FROM %s WHERE email=$1 AND password=$2", usersTable)
+	query := fmt.Sprintf("SELECT id FROM %s WHERE email=$1", usersTable)
+	if email != nil && password != nil {
+		query = fmt.Sprintf("SELECT id FROM %s WHERE email=$1 AND password=$2", usersTable)
+	}
+
 	err := r.db.Get(&user, query, email, password)
 	if err == sql.ErrNoRows {
 		return nil, nil

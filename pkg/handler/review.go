@@ -10,7 +10,6 @@ import (
 )
 
 // todo make validation if there are closed debt for those 2 users
-// todo if we have such review, than recreate.
 func (h *Handler) createReview(c *gin.Context) {
 	var review data.Review
 	if err := c.BindJSON(&review); err != nil {

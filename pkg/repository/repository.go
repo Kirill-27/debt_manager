@@ -9,7 +9,7 @@ type Authorization interface {
 	GetUserById(id int) (*data.User, error)
 	UpdateUser(user data.User) error
 	CreateUser(user data.User) (int, error)
-	GetUser(email, password string) (*data.User, error)
+	GetUser(email, password *string) (*data.User, error)
 	GetAllUsers(sortBy []string, friendsFor *int) ([]data.User, error)
 }
 

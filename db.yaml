@@ -1,0 +1,15 @@
+version: '3.3'
+
+services:
+
+ db:
+  image: postgres
+  restart: always
+  environment:
+   POSTGRES_USER: debts
+   POSTGRES_PASSWORD: debts
+   POSTGRES_DB: debts
+  ports:
+   - "5432:5432"
+
+

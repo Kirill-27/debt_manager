@@ -23,7 +23,7 @@ import (
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
 // @Router /auth/sign-up [post]
-// todo check if this email is free
+// todo add email validation
 func (h *Handler) signUp(c *gin.Context) {
 	var input data.User
 
@@ -33,6 +33,11 @@ func (h *Handler) signUp(c *gin.Context) {
 	}
 
 	input.Password = helpers.GeneratePasswordHash(input.Password)
+	user, err := h.services.Authorization.GetUser(&input.Email, nil)
+	if user != nil {
+		newErrorResponse(c, http.StatusBadRequest, "user with this email address already exists")
+		return
+	}
 	id, err := h.services.Authorization.CreateUser(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
