@@ -21,12 +21,20 @@ func (h *Handler) createReview(c *gin.Context) {
 
 	debts, err := h.services.Debt.GetAllDebts(
 		&idValue, &review.LenderId, strconv.Itoa(data.DebtStatusClosed), nil)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 	if debts == nil {
 		newErrorResponse(c, http.StatusBadRequest, "you don't have any closed deals with lander with this id")
 		return
 	}
 
 	reviews, err := h.services.Review.GetAllReviews(&idValue, &review.LenderId, nil)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 	if reviews != nil {
 		newErrorResponse(c, http.StatusBadRequest, "review for this user already exist")
 		return

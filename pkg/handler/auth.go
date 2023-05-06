@@ -1,11 +1,14 @@
 package handler
 
 import (
-	"errors"
-	"github.com/gin-gonic/gin"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/go-ozzo/ozzo-validation/v4/is"
 	"github.com/kirill-27/debt_manager/data"
 	"github.com/kirill-27/debt_manager/helpers"
 	"github.com/kirill-27/debt_manager/requests"
+
+	"errors"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"strings"
@@ -23,7 +26,6 @@ import (
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
 // @Router /auth/sign-up [post]
-// todo add email validation
 func (h *Handler) signUp(c *gin.Context) {
 	var input data.User
 
@@ -31,9 +33,18 @@ func (h *Handler) signUp(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
+	err := validation.Validate(input.Email, validation.Required, is.Email)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
 
 	input.Password = helpers.GeneratePasswordHash(input.Password)
 	user, err := h.services.Authorization.GetUser(&input.Email, nil)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 	if user != nil {
 		newErrorResponse(c, http.StatusBadRequest, "user with this email address already exists")
 		return
