@@ -11,9 +11,18 @@ services:
    POSTGRES_DB: debts
   ports:
    - "5435:5432"
+  networks:
+   - my-network
 
-# adminer:
-#  image: adminer
-#  restart: always
-#  ports:
-#   - 8007:8080
+ app:
+  image: debts
+  restart: always
+  ports:
+   - "8080:8080"
+  depends_on:
+   - db
+  networks:
+   - my-network
+
+networks:
+ my-network:
