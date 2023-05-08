@@ -13,4 +13,6 @@ type User struct {
 	SubscriptionType int     `json:"subscription_type" db:"subscription_type"`
 	Photo            string  `json:"photo" db:"photo"`
 	Rating           float64 `json:"rating" db:"rating"`
+	MarksSum         int     `json:"marks_sum" db:"marks_sum"`
+	MarksNumber      int     `json:"marks_number" db:"marks_number"`
 }

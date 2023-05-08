@@ -136,6 +136,8 @@ func (h *Handler) getAllUsers(c *gin.Context) {
 	if requester.SubscriptionType == data.SubscriptionTypeFree {
 		for index := range users {
 			users[index].Rating = 0
+			users[index].MarksSum = 0
+			users[index].MarksNumber = 0
 		}
 	}
 	if err != nil {
@@ -214,6 +216,8 @@ func (h *Handler) getUserById(c *gin.Context) {
 		}
 		if requester.SubscriptionType == data.SubscriptionTypeFree {
 			user.Rating = 0
+			user.MarksNumber = 0
+			user.MarksSum = 0
 		}
 	}
 	c.JSON(http.StatusOK, *user)

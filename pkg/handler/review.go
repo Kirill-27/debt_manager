@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// todo validate Rating between 1 and 5
 func (h *Handler) createReview(c *gin.Context) {
 	var review data.Review
 	if err := c.BindJSON(&review); err != nil {
@@ -40,6 +41,24 @@ func (h *Handler) createReview(c *gin.Context) {
 		return
 	}
 	review.ReviewerId = idValue
+
+	lender, err := h.services.Authorization.GetUserById(review.LenderId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if lender == nil {
+		newErrorResponse(c, http.StatusBadRequest, "no such lender with this id")
+	}
+	lender.MarksNumber += 1
+	lender.MarksSum += review.Rate
+	lender.Rating = float64(lender.MarksSum) / float64(lender.MarksNumber)
+
+	err = h.services.Authorization.UpdateUser(*lender)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	id, err := h.services.Review.CreateReview(review)
 	if err != nil {
@@ -117,6 +136,23 @@ func (h *Handler) updateReview(c *gin.Context) {
 	var fieldsToUpdate requests.UpdateReview
 	if err := c.BindJSON(&fieldsToUpdate); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	lender, err := h.services.Authorization.GetUserById(review.LenderId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if lender == nil {
+		newErrorResponse(c, http.StatusInternalServerError, "no such lender with this id")
+	}
+
+	lender.MarksSum += fieldsToUpdate.Rate - review.Rate
+	lender.Rating = float64(lender.MarksSum) / float64(lender.MarksNumber)
+	err = h.services.Authorization.UpdateUser(*lender)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 

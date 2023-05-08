@@ -32,7 +32,7 @@ func (h *Handler) getDebtById(c *gin.Context) {
 	c.JSON(http.StatusOK, *debt)
 }
 
-// todo check if such lender exist
+// todo check if such debtor exist
 func (h *Handler) createDebt(c *gin.Context) {
 	var debt data.Debt
 	if err := c.BindJSON(&debt); err != nil {
@@ -42,7 +42,7 @@ func (h *Handler) createDebt(c *gin.Context) {
 	id, _ := c.Get(userCtx)
 	idValue, _ := id.(int)
 	debt.LenderId = idValue
-	
+
 	id, err := h.services.Debt.CreateDebt(debt)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -120,7 +120,7 @@ func (h *Handler) activateDebt(c *gin.Context) {
 	}
 
 	if debt.Status != data.DebtStatusPendingActive {
-		newErrorResponse(c, http.StatusMethodNotAllowed, "this debt is not in pending active status")
+		newErrorResponse(c, http.StatusBadRequest, "this debt is not in pending active status")
 		return
 	}
 
@@ -208,7 +208,7 @@ func (h *Handler) closeDebt(c *gin.Context) {
 	}
 
 	if debt.Status != data.DebtStatusActive {
-		newErrorResponse(c, http.StatusMethodNotAllowed, "this debt is not in active status")
+		newErrorResponse(c, http.StatusBadRequest, "this debt is not in active status")
 		return
 	}
 

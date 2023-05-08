@@ -1,12 +1,14 @@
 CREATE TABLE users
 (
     id serial not null unique,
-    email     text not null,
+    email     text not null unique,
     password    text not null,
     full_name  text not null,
     subscription_type int default 1,
     photo text not null,
-    rating float not null
+    rating float not null,
+    marks_sum int default 0,
+    marks_number int default 0
 );
 
 CREATE TABLE debts
@@ -23,7 +25,7 @@ CREATE TABLE debts
 
 CREATE TABLE friends
 (
-    my_id  int not null,
+    my_id  int not null unique,
     friend_id  int not null
 );
 

@@ -99,10 +99,11 @@ func (r *AuthPostgres) GetUserById(id int) (*data.User, error) {
 
 func (r *AuthPostgres) UpdateUser(user data.User) error {
 	query := fmt.Sprintf(
-		"UPDATE %s SET email=$2, password=$3, full_name=$4, subscription_type=$5, photo=$6, rating=$7 WHERE id=$1 ",
+		"UPDATE %s SET email=$2, password=$3, full_name=$4, subscription_type=$5, photo=$6, rating=$7, "+
+			"marks_sum=$8, marks_number=$9 WHERE id=$1 ",
 		usersTable)
 
 	_, err := r.db.Exec(query, user.Id, user.Email, user.Password, user.FullName,
-		user.SubscriptionType, user.Photo, user.Rating)
+		user.SubscriptionType, user.Photo, user.Rating, user.MarksSum, user.MarksNumber)
 	return err
 }
