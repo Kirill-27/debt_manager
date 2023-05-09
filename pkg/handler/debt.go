@@ -32,15 +32,25 @@ func (h *Handler) getDebtById(c *gin.Context) {
 	c.JSON(http.StatusOK, *debt)
 }
 
-// todo check if such debtor exist
 func (h *Handler) createDebt(c *gin.Context) {
 	var debt data.Debt
 	if err := c.BindJSON(&debt); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-	id, _ := c.Get(userCtx)
-	idValue, _ := id.(int)
+
+	debtor, err := h.services.Authorization.GetUserById(debt.DebtorId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if debtor == nil {
+		newErrorResponse(c, http.StatusBadRequest, "no debtor with such id")
+		return
+	}
+
+	userId, _ := c.Get(userCtx)
+	idValue, _ := userId.(int)
 	debt.LenderId = idValue
 
 	id, err := h.services.Debt.CreateDebt(debt)
@@ -90,6 +100,11 @@ func (h *Handler) getAllDebts(c *gin.Context) {
 	debts, err := h.services.Debt.GetAllDebts(debtorId, lenderId, statuses, sorts)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if debts == nil {
+		c.JSON(http.StatusOK, []data.Debt{})
 		return
 	}
 

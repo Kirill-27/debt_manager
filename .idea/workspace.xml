@@ -6,14 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="1510878e-4c5f-4281-8d87-cd3965ca00dd" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/data/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/db.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/handler/auth.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/auth.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/handler/current_debts.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/current_debts.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/handler/debt.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/debt.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/handler/review.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/review.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/repository/auth_postgress.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/repository/auth_postgress.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schema/000001_init.up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/000001_init.up.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,7 +100,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/pkg/handler/debt.go</url>
-          <line>89</line>
+          <line>99</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">

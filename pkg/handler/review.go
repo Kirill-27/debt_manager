@@ -101,13 +101,16 @@ func (h *Handler) getAllReviews(c *gin.Context) {
 		sorts = strings.Split(sortAmount, ",")
 	}
 
-	debts, err := h.services.Review.GetAllReviews(reviewerId, lenderId, sorts)
+	reviews, err := h.services.Review.GetAllReviews(reviewerId, lenderId, sorts)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-
-	c.JSON(http.StatusOK, debts)
+	if reviews == nil {
+		c.JSON(http.StatusOK, []data.Review{})
+		return
+	}
+	c.JSON(http.StatusOK, reviews)
 }
 
 func (h *Handler) updateReview(c *gin.Context) {

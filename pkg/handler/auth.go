@@ -140,8 +140,8 @@ func (h *Handler) getAllUsers(c *gin.Context) {
 			users[index].MarksNumber = 0
 		}
 	}
-	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+	if users == nil {
+		c.JSON(http.StatusOK, []data.User{})
 		return
 	}
 
