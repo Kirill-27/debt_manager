@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="1510878e-4c5f-4281-8d87-cd3965ca00dd" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/config.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/handler/auth.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/auth.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/handler/current_debts.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/current_debts.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/handler/debt.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/debt.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/handler/review.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/review.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -110,7 +109,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/pkg/handler/review.go</url>
-          <line>52</line>
+          <line>56</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>

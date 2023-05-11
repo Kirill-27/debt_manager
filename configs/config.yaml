@@ -2,7 +2,8 @@ port: 8080
 
 db:
   username: "debts"
-  host: "localhost"
+  #host: "localhost"
+  host: "debt_manager-db-1"
   port: "5432"
   dbname: "debts"
   sslmode: "disable"

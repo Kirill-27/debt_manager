@@ -161,21 +161,40 @@ func (h *Handler) updateUser(c *gin.Context) {
 		return
 	}
 
+	user, err := h.services.Authorization.GetUserById(userId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if user == nil {
+		newErrorResponse(c, http.StatusNotFound, "there is not user with such id")
+		return
+	}
+
 	var fieldsToUpdate requests.UpdateUser
 	if err := c.BindJSON(&fieldsToUpdate); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	user, err := h.services.Authorization.GetUserById(userId)
-	if user == nil {
-		newErrorResponse(c, http.StatusNotFound, "there is not user with such id")
-		return
+	if fieldsToUpdate.Email != "" {
+		err := validation.Validate(fieldsToUpdate.Email, validation.Required, is.Email)
+		if err != nil {
+			newErrorResponse(c, http.StatusBadRequest, err.Error())
+			return
+		}
+		user.Email = fieldsToUpdate.Email
 	}
-	user.FullName = fieldsToUpdate.FullName
-	user.Photo = fieldsToUpdate.Photo
-	user.Email = fieldsToUpdate.Email
-	user.Password = helpers.GeneratePasswordHash(fieldsToUpdate.Password)
+
+	if fieldsToUpdate.Photo != "" {
+		user.Photo = fieldsToUpdate.Photo
+	}
+	if fieldsToUpdate.FullName != "" {
+		user.FullName = fieldsToUpdate.FullName
+	}
+	if fieldsToUpdate.Password != "" {
+		user.Password = helpers.GeneratePasswordHash(fieldsToUpdate.Password)
+	}
 
 	err = h.services.Authorization.UpdateUser(*user)
 	if err != nil {

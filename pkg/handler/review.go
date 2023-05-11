@@ -16,6 +16,10 @@ func (h *Handler) createReview(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
+	if review.Rate < 1 || review.Rate > 5 {
+		newErrorResponse(c, http.StatusBadRequest, "rate value must be between 1 and 5 incl.")
+		return
+	}
 
 	reviewerId, _ := c.Get(userCtx)
 	idValue, _ := reviewerId.(int)
@@ -139,6 +143,11 @@ func (h *Handler) updateReview(c *gin.Context) {
 	var fieldsToUpdate requests.UpdateReview
 	if err := c.BindJSON(&fieldsToUpdate); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if fieldsToUpdate.Rate < 1 || fieldsToUpdate.Rate > 5 {
+		newErrorResponse(c, http.StatusBadRequest, "rate value must be between 1 and 5 incl.")
 		return
 	}
 
