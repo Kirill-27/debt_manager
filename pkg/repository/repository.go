@@ -19,6 +19,7 @@ type Debt interface {
 	GetDebtById(debtId int) (*data.Debt, error)
 	UpdateStatus(id int, status int) error
 	DeleteDebt(debtId int) error
+	CloseAllDebts(debtorId int, lenderId int) error
 }
 
 type CurrentDebt interface {

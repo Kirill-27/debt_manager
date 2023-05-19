@@ -99,10 +99,7 @@ func (d *DebtPostgres) GetDebtById(debtId int) (*data.Debt, error) {
 	return &debt, err
 }
 func (d *DebtPostgres) UpdateStatus(id int, status int) error {
-	query := fmt.Sprintf(
-		"UPDATE %s SET status=$2 WHERE id=$1 ",
-		debtsTable)
-
+	query := fmt.Sprintf("UPDATE %s SET status=$2 WHERE id=$1 ", debtsTable)
 	_, err := d.db.Exec(query, id, status)
 	return err
 }
@@ -111,5 +108,10 @@ func (d *DebtPostgres) DeleteDebt(debtId int) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", debtsTable)
 	_, err := d.db.Exec(query, debtId)
 	return err
+}
 
+func (d *DebtPostgres) CloseAllDebts(debtorId int, lenderId int) error {
+	query := fmt.Sprintf("UPDATE %s SET status=$1 WHERE debtor_id=$2 AND lender_id=$3", debtsTable)
+	_, err := d.db.Exec(query, data.DebtStatusClosed, debtorId, lenderId)
+	return err
 }

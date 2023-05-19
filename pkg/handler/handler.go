@@ -39,6 +39,7 @@ func (h *Handler) InitRouters() *gin.Engine {
 
 			debts.POST("/activate/:id", h.activateDebt)
 			debts.POST("/close/:id", h.closeDebt)
+			debts.POST("/close-all-with/:id", h.closeAllWithDebt)
 		}
 		currentDebts := api.Group("/current-debts")
 		{

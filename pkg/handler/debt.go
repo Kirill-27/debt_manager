@@ -320,6 +320,59 @@ func (h *Handler) deleteDebtById(c *gin.Context) {
 	c.JSON(http.StatusNoContent, nil)
 }
 
+func (h *Handler) closeAllWithDebt(c *gin.Context) {
+	lenderId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
+		return
+	}
+
+	id, _ := c.Get(userCtx)
+	debtorId, _ := id.(int)
+
+	debtorCurrentDebts, err := h.services.CurrentDebt.GetAllCurrentDebts(&debtorId, &lenderId, nil)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if debtorCurrentDebts == nil {
+		newErrorResponse(c, http.StatusBadRequest, "there is no current debts between you and this lender")
+		return
+	}
+	if debtorCurrentDebts[0].Amount < 0 {
+		newErrorResponse(c, http.StatusBadRequest, "this person doesn't owe you. You owe him")
+		return
+	}
+
+	lenderCurrentDebts, err := h.services.CurrentDebt.GetAllCurrentDebts(&lenderId, &debtorId, nil)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if lenderCurrentDebts == nil {
+		newErrorResponse(c, http.StatusBadRequest, "there is no current debts between you and this lender")
+		return
+	}
+
+	err = h.services.Debt.CloseAllDebts(debtorId, lenderId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	err = h.services.CurrentDebt.DeleteCurrentDebt(debtorCurrentDebts[0].Id)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	err = h.services.CurrentDebt.DeleteCurrentDebt(lenderCurrentDebts[0].Id)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusNoContent, nil)
+}
+
 func makeFilter(value string) string {
 	return "filter[" + value + "]"
 }

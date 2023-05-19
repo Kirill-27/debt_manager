@@ -29,3 +29,7 @@ func (s *DebtService) UpdateStatus(id int, status int) error {
 func (s *DebtService) DeleteDebt(debtId int) error {
 	return s.repo.DeleteDebt(debtId)
 }
+
+func (s *DebtService) CloseAllDebts(debtorId int, lenderId int) error {
+	return s.repo.CloseAllDebts(debtorId, lenderId)
+}
