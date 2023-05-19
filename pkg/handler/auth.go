@@ -183,6 +183,17 @@ func (h *Handler) updateUser(c *gin.Context) {
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
 			return
 		}
+
+		user, err := h.services.Authorization.GetUser(&fieldsToUpdate.Email, nil)
+		if err != nil {
+			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+		if user != nil {
+			newErrorResponse(c, http.StatusBadRequest, "user with this email address already exists")
+			return
+		}
+
 		user.Email = fieldsToUpdate.Email
 	}
 

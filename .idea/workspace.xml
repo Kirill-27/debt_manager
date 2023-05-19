@@ -8,7 +8,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/config.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/handler/auth.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/auth.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/handler/review.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/review.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/repository/auth_postgress.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/repository/auth_postgress.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/000001_init.up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/000001_init.up.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,16 +53,16 @@
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
     &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/kirillchernov/go/src/github.com/kirill-27/debt_manager&quot;
+    &quot;last_opened_file_path&quot;: &quot;/Users/kirillchernov/go/src/github.com/kirill-27/debt_manager/schema&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/schema" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/pkg/service" />
       <recent name="$PROJECT_DIR$/requests" />
       <recent name="$PROJECT_DIR$/pkg/repository" />
-      <recent name="$PROJECT_DIR$/pkg/handler" />
     </key>
   </component>
   <component name="RunManager">
