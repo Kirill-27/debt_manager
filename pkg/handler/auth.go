@@ -126,7 +126,7 @@ func (h *Handler) getAllUsers(c *gin.Context) {
 		return
 	}
 	if requester == nil {
-		newErrorResponse(c, http.StatusNotFound, "wrong id in auth token")
+		newErrorResponse(c, http.StatusBadRequest, "wrong id in auth token")
 		return
 	}
 
@@ -177,19 +177,19 @@ func (h *Handler) updateUser(c *gin.Context) {
 		return
 	}
 
-	if fieldsToUpdate.Email != "" {
+	if fieldsToUpdate.Email != "" && fieldsToUpdate.Email != user.Email {
 		err := validation.Validate(fieldsToUpdate.Email, validation.Required, is.Email)
 		if err != nil {
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		user, err := h.services.Authorization.GetUser(&fieldsToUpdate.Email, nil)
+		userEmail, err := h.services.Authorization.GetUser(&fieldsToUpdate.Email, nil)
 		if err != nil {
 			newErrorResponse(c, http.StatusInternalServerError, err.Error())
 			return
 		}
-		if user != nil {
+		if userEmail != nil {
 			newErrorResponse(c, http.StatusBadRequest, "user with this email address already exists")
 			return
 		}
@@ -241,7 +241,7 @@ func (h *Handler) getUserById(c *gin.Context) {
 			return
 		}
 		if requester == nil {
-			newErrorResponse(c, http.StatusNotFound, "wrong id in auth token")
+			newErrorResponse(c, http.StatusBadRequest, "wrong id in auth token")
 			return
 		}
 		if requester.SubscriptionType == data.SubscriptionTypeFree {

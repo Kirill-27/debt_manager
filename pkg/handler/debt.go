@@ -51,6 +51,12 @@ func (h *Handler) createDebt(c *gin.Context) {
 
 	userId, _ := c.Get(userCtx)
 	idValue, _ := userId.(int)
+
+	if debt.DebtorId == idValue {
+		newErrorResponse(c, http.StatusBadRequest, "you can't be a debtor in debt which you created")
+		return
+	}
+
 	debt.LenderId = idValue
 
 	id, err := h.services.Debt.CreateDebt(debt)

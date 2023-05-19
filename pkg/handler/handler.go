@@ -54,6 +54,11 @@ func (h *Handler) InitRouters() *gin.Engine {
 		{
 			friends.POST("/:id", h.addFriend)
 		}
+		statistics := api.Group("/statistic")
+		{
+			statistics.GET("/common", h.commonStatistic)
+			statistics.GET("/premium", h.premiumStatistic)
+		}
 	}
 	return router
 }
