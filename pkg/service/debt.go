@@ -33,3 +33,11 @@ func (s *DebtService) DeleteDebt(debtId int) error {
 func (s *DebtService) CloseAllDebts(debtorId int, lenderId int) error {
 	return s.repo.CloseAllDebts(debtorId, lenderId)
 }
+
+func (s *DebtService) SelectTop3Lenders(debtorId int) ([]int, error) {
+	return s.repo.SelectTop3Lenders(debtorId)
+}
+
+func (s *DebtService) SelectTop3Debtors(lenderId int) ([]int, error) {
+	return s.repo.SelectTop3Debtors(lenderId)
+}

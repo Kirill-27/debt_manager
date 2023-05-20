@@ -1,14 +1,10 @@
 package requests
 
 type CommonStatistic struct {
-	MyDebtsAmount         int                     `json:"my_debts_amount" binding:"required"`
-	FriendsDebtsAmount    int                     `json:"friends_debts_amount" binding:"required"`
-	MyDebtsNumber         int                     `json:"my_debts_number" binding:"required"`
-	FriendsDebtsNumber    int                     `json:"friends_debts_number" binding:"required"`
-	TopFriendsInteraction []TopFriendsInteraction `json:"top_friends_interaction" binding:"required"`
-}
-
-type TopFriendsInteraction struct {
-	FriendId           int `json:"friend_id" binding:"required"`
-	InteractionsNumber int `json:"interactions_number" binding:"required"`
+	MyActiveDebtsAmount      int   `json:"my_active_debts_amount" binding:"required"`
+	FriendsActiveDebtsAmount int   `json:"friends_active_debts_amount" binding:"required"`
+	MyActiveDebtsNumber      int   `json:"my_active_debts_number" binding:"required"`
+	FriendsActiveDebtsNumber int   `json:"friends_active_debts_number" binding:"required"`
+	TopLenders               []int `json:"top_lenders" binding:"required"`
+	TopDebtors               []int `json:"top_debtors" binding:"required"`
 }

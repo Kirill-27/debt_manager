@@ -115,3 +115,55 @@ func (d *DebtPostgres) CloseAllDebts(debtorId int, lenderId int) error {
 	_, err := d.db.Exec(query, data.DebtStatusClosed, debtorId, lenderId)
 	return err
 }
+
+func (d *DebtPostgres) SelectTop3Lenders(debtorId int) ([]int, error) {
+	query := fmt.Sprintf("SELECT lender_id FROM %s WHERE debtor_id=$1"+
+		" GROUP BY lender_id ORDER BY COUNT(*) DESC LIMIT 3", debtsTable)
+
+	rows, err := d.db.Queryx(query, debtorId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var lenderIds []int
+	for rows.Next() {
+		var lenderId LenderIdStruct
+		if err := rows.StructScan(&lenderId); err != nil {
+			return nil, err
+		}
+		lenderIds = append(lenderIds, lenderId.LenderId)
+	}
+
+	return lenderIds, err
+}
+
+func (d *DebtPostgres) SelectTop3Debtors(lenderId int) ([]int, error) {
+	query := fmt.Sprintf("SELECT debtor_id FROM %s WHERE lender_id=$1"+
+		" GROUP BY debtor_id ORDER BY COUNT(*) DESC LIMIT 3", debtsTable)
+
+	rows, err := d.db.Queryx(query, lenderId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var debtorIds []int
+	for rows.Next() {
+		var debtorId DebtorIdStruct
+		if err := rows.StructScan(&debtorId); err != nil {
+			return nil, err
+		}
+		debtorIds = append(debtorIds, debtorId.DebtorId)
+	}
+
+	return debtorIds, err
+}
+
+type LenderIdStruct struct {
+	LenderId int `json:"lender_id" db:"lender_id"`
+}
+
+type DebtorIdStruct struct {
+	DebtorId int `json:"debtor_id" db:"debtor_id"`
+}

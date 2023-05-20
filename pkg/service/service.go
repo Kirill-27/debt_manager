@@ -24,6 +24,8 @@ type Debt interface {
 	UpdateStatus(id int, status int) error
 	DeleteDebt(debtId int) error
 	CloseAllDebts(debtorId int, lenderId int) error
+	SelectTop3Lenders(debtorId int) ([]int, error)
+	SelectTop3Debtors(lenderId int) ([]int, error)
 }
 
 type CurrentDebt interface {

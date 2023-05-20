@@ -13,7 +13,18 @@ func (h *Handler) commonStatistic(c *gin.Context) {
 	myId, _ := id.(int)
 
 	var commonStatistic requests.CommonStatistic
-	commonStatistic.TopFriendsInteraction = []requests.TopFriendsInteraction{}
+	topDebtors, err := h.services.Debt.SelectTop3Debtors(myId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	topLenders, err := h.services.Debt.SelectTop3Lenders(myId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	commonStatistic.TopDebtors = append([]int{}, topDebtors...)
+	commonStatistic.TopLenders = append([]int{}, topLenders...)
 
 	FriendsDebts, err := h.services.Debt.GetAllDebts(&myId, nil, strconv.Itoa(data.DebtStatusActive), nil)
 	if err != nil {
@@ -21,10 +32,10 @@ func (h *Handler) commonStatistic(c *gin.Context) {
 		return
 	}
 
-	commonStatistic.FriendsDebtsNumber = len(FriendsDebts)
+	commonStatistic.FriendsActiveDebtsNumber = len(FriendsDebts)
 
 	for _, debt := range FriendsDebts {
-		commonStatistic.FriendsDebtsAmount += debt.Amount
+		commonStatistic.FriendsActiveDebtsAmount += debt.Amount
 	}
 
 	myDebts, err := h.services.Debt.GetAllDebts(nil, &myId, strconv.Itoa(data.DebtStatusActive), nil)
@@ -33,10 +44,10 @@ func (h *Handler) commonStatistic(c *gin.Context) {
 		return
 	}
 
-	commonStatistic.MyDebtsNumber = len(myDebts)
+	commonStatistic.MyActiveDebtsNumber = len(myDebts)
 
 	for _, debt := range myDebts {
-		commonStatistic.MyDebtsAmount += debt.Amount
+		commonStatistic.MyActiveDebtsAmount += debt.Amount
 	}
 
 	c.JSON(http.StatusOK, commonStatistic)
