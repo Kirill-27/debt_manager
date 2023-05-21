@@ -13,22 +13,30 @@ func (h *Handler) commonStatistic(c *gin.Context) {
 	myId, _ := id.(int)
 
 	var commonStatistic requests.CommonStatistic
-	topDebtors, err := h.services.Debt.SelectTop3Debtors(myId)
+	topDebtor, err := h.services.Debt.SelectTop3Debtors(myId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, "can not get top debtors")
 		return
 	}
-	topLenders, err := h.services.Debt.SelectTop3Lenders(myId)
+	topLender, err := h.services.Debt.SelectTop3Lenders(myId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, "can not get top lenders")
 		return
 	}
-	commonStatistic.TopDebtors = append([]int{}, topDebtors...)
-	commonStatistic.TopLenders = append([]int{}, topLenders...)
+	if topDebtor == nil {
+		commonStatistic.TopDebtor = 0
+	} else {
+		commonStatistic.TopDebtor = topDebtor[0]
+	}
+	if topLender == nil {
+		commonStatistic.TopLender = 0
+	} else {
+		commonStatistic.TopLender = topLender[0]
+	}
 
 	FriendsDebts, err := h.services.Debt.GetAllDebts(&myId, nil, strconv.Itoa(data.DebtStatusActive), nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, "can not get friends debts")
 		return
 	}
 
@@ -40,7 +48,7 @@ func (h *Handler) commonStatistic(c *gin.Context) {
 
 	myDebts, err := h.services.Debt.GetAllDebts(nil, &myId, strconv.Itoa(data.DebtStatusActive), nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, "can not det my debt")
 		return
 	}
 
@@ -59,7 +67,7 @@ func (h *Handler) premiumStatistic(c *gin.Context) {
 
 	requester, err := h.services.Authorization.GetUserById(myId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, "can not get user by id")
 		return
 	}
 	if requester == nil {
@@ -75,7 +83,7 @@ func (h *Handler) premiumStatistic(c *gin.Context) {
 
 	FriendsDebts, err := h.services.Debt.GetAllDebts(&myId, nil, strconv.Itoa(data.DebtStatusActive)+","+strconv.Itoa(data.DebtStatusClosed), nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, "can not get friends debts")
 		return
 	}
 
@@ -87,7 +95,7 @@ func (h *Handler) premiumStatistic(c *gin.Context) {
 
 	myDebts, err := h.services.Debt.GetAllDebts(nil, &myId, strconv.Itoa(data.DebtStatusActive), nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, "can not get my debt")
 		return
 	}
 

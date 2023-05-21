@@ -117,7 +117,7 @@ func (d *DebtPostgres) CloseAllDebts(debtorId int, lenderId int) error {
 }
 
 func (d *DebtPostgres) SelectTop3Lenders(debtorId int) ([]int, error) {
-	query := fmt.Sprintf("SELECT lender_id FROM %s WHERE debtor_id=$1"+
+	query := fmt.Sprintf("SELECT lender_id FROM %s WHERE debtor_id=$1 AND status in (2,3)"+
 		" GROUP BY lender_id ORDER BY COUNT(*) DESC LIMIT 3", debtsTable)
 
 	rows, err := d.db.Queryx(query, debtorId)
@@ -139,7 +139,7 @@ func (d *DebtPostgres) SelectTop3Lenders(debtorId int) ([]int, error) {
 }
 
 func (d *DebtPostgres) SelectTop3Debtors(lenderId int) ([]int, error) {
-	query := fmt.Sprintf("SELECT debtor_id FROM %s WHERE lender_id=$1"+
+	query := fmt.Sprintf("SELECT debtor_id FROM %s WHERE lender_id=$1 AND status in (2,3)"+
 		" GROUP BY debtor_id ORDER BY COUNT(*) DESC LIMIT 3", debtsTable)
 
 	rows, err := d.db.Queryx(query, lenderId)

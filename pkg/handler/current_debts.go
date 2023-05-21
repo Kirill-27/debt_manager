@@ -39,7 +39,7 @@ func (h *Handler) getAllCurrentDebts(c *gin.Context) {
 
 	debts, err := h.services.CurrentDebt.GetAllCurrentDebts(debtorId, lenderId, sorts)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, "can not get all current debts")
 		return
 	}
 
