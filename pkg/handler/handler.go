@@ -14,6 +14,9 @@ func NewHandler(services *service.Service) *Handler {
 }
 
 func (h *Handler) InitRouters() *gin.Engine {
+	exchangeRatesKeeper := NewExchangeRatesKeeper()
+	go exchangeRatesKeeper.ExchangeRatesGetter()
+
 	router := gin.New()
 
 	auth := router.Group("/auth")
@@ -60,6 +63,8 @@ func (h *Handler) InitRouters() *gin.Engine {
 			statistics.GET("/common", h.commonStatistic)
 			statistics.GET("/premium", h.premiumStatistic)
 		}
+
+		api.GET("/currency-rate", exchangeRatesKeeper.currencyRate)
 	}
 	return router
 }
