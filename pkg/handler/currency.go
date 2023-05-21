@@ -14,12 +14,6 @@ const (
 	EURIndex = 31
 )
 
-type Result struct {
-	UAN         int
-	Currency    string
-	ResultValue float64
-}
-
 type NBUResponse []struct {
 	R030         int     `json:"r030"`
 	Txt          string  `json:"txt"`

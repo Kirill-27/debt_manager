@@ -19,6 +19,8 @@ func (h *Handler) InitRouters() *gin.Engine {
 
 	router := gin.New()
 
+	router.GET("/currency-rate", exchangeRatesKeeper.currencyRate)
+
 	auth := router.Group("/auth")
 	{
 		auth.POST("sign-up", h.signUp)
@@ -64,7 +66,6 @@ func (h *Handler) InitRouters() *gin.Engine {
 			statistics.GET("/premium", h.premiumStatistic)
 		}
 
-		api.GET("/currency-rate", exchangeRatesKeeper.currencyRate)
 	}
 	return router
 }
