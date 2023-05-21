@@ -42,7 +42,7 @@ func (h *Handler) signUp(c *gin.Context) {
 	input.Password = helpers.GeneratePasswordHash(input.Password)
 	user, err := h.services.Authorization.GetUser(&input.Email, nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get user by email")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get user by email")
 		return
 	}
 	if user != nil {
@@ -51,7 +51,7 @@ func (h *Handler) signUp(c *gin.Context) {
 	}
 	id, err := h.services.Authorization.CreateUser(input)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not create user")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not create user")
 		return
 	}
 
@@ -114,7 +114,7 @@ func (h *Handler) getAllUsers(c *gin.Context) {
 
 	users, err := h.services.Authorization.GetAllUsers(sorts, friendsFor)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get all users")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get all users")
 		return
 	}
 
@@ -122,7 +122,7 @@ func (h *Handler) getAllUsers(c *gin.Context) {
 	idValue, _ := id.(int)
 	requester, err := h.services.Authorization.GetUserById(idValue)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get user by id")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get user by id")
 		return
 	}
 	if requester == nil {
@@ -163,7 +163,7 @@ func (h *Handler) updateUser(c *gin.Context) {
 
 	user, err := h.services.Authorization.GetUserById(userId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get user by id")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get user by id")
 		return
 	}
 	if user == nil {
@@ -186,7 +186,7 @@ func (h *Handler) updateUser(c *gin.Context) {
 
 		userEmail, err := h.services.Authorization.GetUser(&fieldsToUpdate.Email, nil)
 		if err != nil {
-			newErrorResponse(c, http.StatusInternalServerError, "can not get user by email")
+			newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get user by email")
 			return
 		}
 		if userEmail != nil {
@@ -209,7 +209,7 @@ func (h *Handler) updateUser(c *gin.Context) {
 
 	err = h.services.Authorization.UpdateUser(*user)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not update user")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not update user")
 		return
 	}
 	c.JSON(http.StatusNoContent, nil)
@@ -224,7 +224,7 @@ func (h *Handler) getUserById(c *gin.Context) {
 
 	user, err := h.services.Authorization.GetUserById(userId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get user by id")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get user by id")
 		return
 	}
 	if user == nil {
@@ -237,7 +237,7 @@ func (h *Handler) getUserById(c *gin.Context) {
 		idValue, _ := id.(int)
 		requester, err := h.services.Authorization.GetUserById(idValue)
 		if err != nil {
-			newErrorResponse(c, http.StatusInternalServerError, "can not get user by id")
+			newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get user by id")
 			return
 		}
 		if requester == nil {

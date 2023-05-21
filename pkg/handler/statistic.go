@@ -6,6 +6,7 @@ import (
 	"github.com/kirill-27/debt_manager/requests"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func (h *Handler) commonStatistic(c *gin.Context) {
@@ -15,12 +16,12 @@ func (h *Handler) commonStatistic(c *gin.Context) {
 	var commonStatistic requests.CommonStatistic
 	topDebtor, err := h.services.Debt.SelectTop3Debtors(myId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get top debtors")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get top debtors")
 		return
 	}
 	topLender, err := h.services.Debt.SelectTop3Lenders(myId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get top lenders")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get top lenders")
 		return
 	}
 	if topDebtor == nil {
@@ -36,7 +37,7 @@ func (h *Handler) commonStatistic(c *gin.Context) {
 
 	FriendsDebts, err := h.services.Debt.GetAllDebts(&myId, nil, strconv.Itoa(data.DebtStatusActive), nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get friends debts")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get friends debts")
 		return
 	}
 
@@ -48,7 +49,7 @@ func (h *Handler) commonStatistic(c *gin.Context) {
 
 	myDebts, err := h.services.Debt.GetAllDebts(nil, &myId, strconv.Itoa(data.DebtStatusActive), nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not det my debt")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not det my debt")
 		return
 	}
 
@@ -67,7 +68,7 @@ func (h *Handler) premiumStatistic(c *gin.Context) {
 
 	requester, err := h.services.Authorization.GetUserById(myId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get user by id")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get user by id")
 		return
 	}
 	if requester == nil {
@@ -83,7 +84,7 @@ func (h *Handler) premiumStatistic(c *gin.Context) {
 
 	FriendsDebts, err := h.services.Debt.GetAllDebts(&myId, nil, strconv.Itoa(data.DebtStatusActive)+","+strconv.Itoa(data.DebtStatusClosed), nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get friends debts")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get friends debts")
 		return
 	}
 
@@ -93,9 +94,9 @@ func (h *Handler) premiumStatistic(c *gin.Context) {
 		premiumStatistic.FriendsDebtsAmount += debt.Amount
 	}
 
-	myDebts, err := h.services.Debt.GetAllDebts(nil, &myId, strconv.Itoa(data.DebtStatusActive), nil)
+	myDebts, err := h.services.Debt.GetAllDebts(nil, &myId, strconv.Itoa(data.DebtStatusActive)+","+strconv.Itoa(data.DebtStatusClosed), nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get my debt")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get my debt")
 		return
 	}
 
@@ -103,6 +104,37 @@ func (h *Handler) premiumStatistic(c *gin.Context) {
 
 	for _, debt := range myDebts {
 		premiumStatistic.MyDebtsAmount += debt.Amount
+	}
+
+	premiumStatistic.MonthlyMyDebts = []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	premiumStatistic.MonthlyFriendsDebts = []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+
+	friendsClosedDebts, err := h.services.Debt.GetAllDebts(
+		&myId, nil, strconv.Itoa(data.DebtStatusClosed), []string{"-updated_at"})
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get my debt")
+		return
+	}
+
+	for _, debt := range friendsClosedDebts {
+		if debt.UpdatedAt.Year() < time.Now().Year() {
+			break
+		}
+		premiumStatistic.MonthlyFriendsDebts[debt.UpdatedAt.Month()-1] += debt.Amount
+	}
+
+	myClosedDebts, err := h.services.Debt.GetAllDebts(
+		nil, &myId, strconv.Itoa(data.DebtStatusClosed), []string{"-updated_at"})
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get friends debt")
+		return
+	}
+
+	for _, debt := range myClosedDebts {
+		if debt.UpdatedAt.Year() < time.Now().Year() {
+			break
+		}
+		premiumStatistic.MonthlyMyDebts[debt.UpdatedAt.Month()-1] += debt.Amount
 	}
 
 	c.JSON(http.StatusOK, premiumStatistic)

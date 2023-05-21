@@ -17,7 +17,7 @@ func (h *Handler) getDebtById(c *gin.Context) {
 
 	debt, err := h.services.Debt.GetDebtById(debtId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can get debt by id")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get debt by id")
 		return
 	}
 	if debt == nil {
@@ -41,7 +41,7 @@ func (h *Handler) createDebt(c *gin.Context) {
 
 	debtor, err := h.services.Authorization.GetUserById(debt.DebtorId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get debtor by id")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get debtor by id")
 		return
 	}
 	if debtor == nil {
@@ -61,7 +61,7 @@ func (h *Handler) createDebt(c *gin.Context) {
 
 	id, err := h.services.Debt.CreateDebt(debt)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not create debt")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not create debt")
 		return
 	}
 
@@ -105,7 +105,7 @@ func (h *Handler) getAllDebts(c *gin.Context) {
 
 	debts, err := h.services.Debt.GetAllDebts(debtorId, lenderId, statuses, sorts)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get all debts")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get all debts")
 		return
 	}
 
@@ -126,7 +126,7 @@ func (h *Handler) activateDebt(c *gin.Context) {
 
 	debt, err := h.services.Debt.GetDebtById(debtId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get debt by id")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get debt by id")
 		return
 	}
 	if debt == nil {
@@ -147,18 +147,18 @@ func (h *Handler) activateDebt(c *gin.Context) {
 
 	err = h.services.Debt.UpdateStatus(debtId, data.DebtStatusActive)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not update debt status")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not update debt status")
 		return
 	}
 
 	debtor, err := h.services.CurrentDebt.GetAllCurrentDebts(&debt.DebtorId, &debt.LenderId, nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get all current debts")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get all current debts")
 		return
 	}
 	lender, err := h.services.CurrentDebt.GetAllCurrentDebts(&debt.LenderId, &debt.DebtorId, nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get all current debts")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get all current debts")
 		return
 	}
 
@@ -166,14 +166,14 @@ func (h *Handler) activateDebt(c *gin.Context) {
 		newAmountDebtor := debtor[0].Amount + debt.Amount
 		err = h.services.CurrentDebt.UpdateAmount(debtor[0].Id, newAmountDebtor)
 		if err != nil {
-			newErrorResponse(c, http.StatusInternalServerError, "can not update amount in current debt")
+			newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not update amount in current debt")
 			return
 		}
 
 		newAmountLender := lender[0].Amount - debt.Amount
 		err = h.services.CurrentDebt.UpdateAmount(lender[0].Id, newAmountLender)
 		if err != nil {
-			newErrorResponse(c, http.StatusInternalServerError, "can not update amount in current debt")
+			newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not update amount in current debt")
 			return
 		}
 		c.JSON(http.StatusNoContent, nil)
@@ -187,7 +187,7 @@ func (h *Handler) activateDebt(c *gin.Context) {
 	}
 	_, err = h.services.CurrentDebt.CreateCurrentDebt(newCurrenDebt)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not create current debt")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not create current debt")
 		return
 	}
 
@@ -198,7 +198,7 @@ func (h *Handler) activateDebt(c *gin.Context) {
 	}
 	_, err = h.services.CurrentDebt.CreateCurrentDebt(newCurrenDebtReverse)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not create current debt")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not create current debt")
 		return
 	}
 
@@ -214,7 +214,7 @@ func (h *Handler) closeDebt(c *gin.Context) {
 
 	debt, err := h.services.Debt.GetDebtById(debtId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get debt by id")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get debt by id")
 		return
 	}
 	if debt == nil {
@@ -235,32 +235,32 @@ func (h *Handler) closeDebt(c *gin.Context) {
 
 	err = h.services.Debt.UpdateStatus(debtId, data.DebtStatusClosed)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not update debt status")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not update debt status")
 		return
 	}
 
 	debtor, err := h.services.CurrentDebt.GetAllCurrentDebts(&debt.DebtorId, &debt.LenderId, nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get current debt")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get current debt")
 		return
 	}
 	lender, err := h.services.CurrentDebt.GetAllCurrentDebts(&debt.LenderId, &debt.DebtorId, nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get current debt")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get current debt")
 		return
 	}
 
 	newAmountDebtor := debtor[0].Amount - debt.Amount
 	err = h.services.CurrentDebt.UpdateAmount(debtor[0].Id, newAmountDebtor)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not update current debt amount")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not update current debt amount")
 		return
 	}
 
 	newAmountLender := lender[0].Amount + debt.Amount
 	err = h.services.CurrentDebt.UpdateAmount(lender[0].Id, newAmountLender)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not update current debt amount")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not update current debt amount")
 		return
 	}
 
@@ -270,12 +270,12 @@ func (h *Handler) closeDebt(c *gin.Context) {
 	if newAmountDebtor == 0 && newAmountLender == 0 && debtsForLenderAndDebtor == nil {
 		err = h.services.CurrentDebt.DeleteCurrentDebt(debtor[0].Id)
 		if err != nil {
-			newErrorResponse(c, http.StatusInternalServerError, "can not delete current debt")
+			newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not delete current debt")
 			return
 		}
 		err = h.services.CurrentDebt.DeleteCurrentDebt(lender[0].Id)
 		if err != nil {
-			newErrorResponse(c, http.StatusInternalServerError, "can not delete current debt")
+			newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not delete current debt")
 			return
 		}
 	}
@@ -292,7 +292,7 @@ func (h *Handler) deleteDebtById(c *gin.Context) {
 
 	debt, err := h.services.Debt.GetDebtById(debtId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get debt by id")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get debt by id")
 		return
 	}
 	if debt == nil {
@@ -313,7 +313,7 @@ func (h *Handler) deleteDebtById(c *gin.Context) {
 
 	err = h.services.Debt.DeleteDebt(debtId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not delete debt")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not delete debt")
 		return
 	}
 
@@ -332,7 +332,7 @@ func (h *Handler) closeAllWithDebt(c *gin.Context) {
 
 	debtorCurrentDebts, err := h.services.CurrentDebt.GetAllCurrentDebts(&debtorId, &lenderId, nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get current debt")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get current debt")
 		return
 	}
 	if debtorCurrentDebts == nil {
@@ -346,7 +346,7 @@ func (h *Handler) closeAllWithDebt(c *gin.Context) {
 
 	lenderCurrentDebts, err := h.services.CurrentDebt.GetAllCurrentDebts(&lenderId, &debtorId, nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get current debt")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get current debt")
 		return
 	}
 	if lenderCurrentDebts == nil {
@@ -356,17 +356,17 @@ func (h *Handler) closeAllWithDebt(c *gin.Context) {
 
 	err = h.services.Debt.CloseAllDebts(debtorId, lenderId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not close all debts")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not close all debts")
 		return
 	}
 	err = h.services.CurrentDebt.DeleteCurrentDebt(debtorCurrentDebts[0].Id)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not delete current debt")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not delete current debt")
 		return
 	}
 	err = h.services.CurrentDebt.DeleteCurrentDebt(lenderCurrentDebts[0].Id)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not delete current debt")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not delete current debt")
 		return
 	}
 

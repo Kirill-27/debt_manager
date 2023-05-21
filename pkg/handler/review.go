@@ -27,7 +27,7 @@ func (h *Handler) createReview(c *gin.Context) {
 	debts, err := h.services.Debt.GetAllDebts(
 		&idValue, &review.LenderId, strconv.Itoa(data.DebtStatusClosed), nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get closed debts")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get closed debts")
 		return
 	}
 	if debts == nil {
@@ -37,7 +37,7 @@ func (h *Handler) createReview(c *gin.Context) {
 
 	reviews, err := h.services.Review.GetAllReviews(&idValue, &review.LenderId, nil)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get reviews")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get reviews")
 		return
 	}
 	if reviews != nil {
@@ -48,7 +48,7 @@ func (h *Handler) createReview(c *gin.Context) {
 
 	lender, err := h.services.Authorization.GetUserById(review.LenderId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get user by id")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get user by id")
 		return
 	}
 	if lender == nil {
@@ -60,13 +60,13 @@ func (h *Handler) createReview(c *gin.Context) {
 
 	err = h.services.Authorization.UpdateUser(*lender)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not update user")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not update user")
 		return
 	}
 
 	id, err := h.services.Review.CreateReview(review)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not create review")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not create review")
 		return
 	}
 
@@ -107,7 +107,7 @@ func (h *Handler) getAllReviews(c *gin.Context) {
 
 	reviews, err := h.services.Review.GetAllReviews(reviewerId, lenderId, sorts)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get all reviews")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get all reviews")
 		return
 	}
 	if reviews == nil {
@@ -126,7 +126,7 @@ func (h *Handler) updateReview(c *gin.Context) {
 
 	review, err := h.services.Review.GetReviewById(reviewId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get review by id")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get review by id")
 		return
 	}
 	if review == nil {
@@ -153,7 +153,7 @@ func (h *Handler) updateReview(c *gin.Context) {
 
 	lender, err := h.services.Authorization.GetUserById(review.LenderId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not get lender by id")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get lender by id")
 		return
 	}
 	if lender == nil {
@@ -164,7 +164,7 @@ func (h *Handler) updateReview(c *gin.Context) {
 	lender.Rating = float64(lender.MarksSum) / float64(lender.MarksNumber)
 	err = h.services.Authorization.UpdateUser(*lender)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not update user")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not update user")
 		return
 	}
 
@@ -173,7 +173,7 @@ func (h *Handler) updateReview(c *gin.Context) {
 
 	err = h.services.Review.UpdateReview(*review)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not update review")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not update review")
 		return
 	}
 

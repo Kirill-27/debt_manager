@@ -34,7 +34,7 @@ func (h *Handler) addFriend(c *gin.Context) {
 
 	err = h.services.Friends.AddFriend(intId, friendId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "can not add friend")
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not add friend")
 		return
 	}
 
