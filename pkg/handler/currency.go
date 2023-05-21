@@ -29,8 +29,8 @@ type NBUResponse []struct {
 }
 
 type ExchangeRatesKeeper struct {
-	USD float64
-	EUR float64
+	USD float64 `json:"usd"`
+	EUR float64 `json:"eur"`
 }
 
 func NewExchangeRatesKeeper() *ExchangeRatesKeeper {
