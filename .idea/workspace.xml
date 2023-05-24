@@ -7,9 +7,14 @@
     <list default="true" id="1510878e-4c5f-4281-8d87-cd3965ca00dd" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/handler/currency.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/currency.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/handler/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/handler/debt.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/debt.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/handler/friends.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/friends.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/handler/review.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/review.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/handler/statistic.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/statistic.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/repository/debt_postgress.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/repository/debt_postgress.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/repository/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/repository/repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/service/debt.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/service/debt.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/service/service.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,18 +104,13 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/pkg/handler/debt.go</url>
-          <line>105</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/pkg/service/review.go</url>
           <line>19</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/pkg/handler/review.go</url>
-          <line>56</line>
+          <line>55</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>

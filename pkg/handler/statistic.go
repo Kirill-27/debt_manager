@@ -35,7 +35,7 @@ func (h *Handler) commonStatistic(c *gin.Context) {
 		commonStatistic.TopLender = topLender[0]
 	}
 
-	FriendsDebts, err := h.services.Debt.GetAllDebts(&myId, nil, strconv.Itoa(data.DebtStatusActive), nil)
+	FriendsDebts, err := h.services.Debt.GetAllDebts(strconv.Itoa(myId), "", strconv.Itoa(data.DebtStatusActive), nil)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get friends debts")
 		return
@@ -47,7 +47,7 @@ func (h *Handler) commonStatistic(c *gin.Context) {
 		commonStatistic.FriendsActiveDebtsAmount += debt.Amount
 	}
 
-	myDebts, err := h.services.Debt.GetAllDebts(nil, &myId, strconv.Itoa(data.DebtStatusActive), nil)
+	myDebts, err := h.services.Debt.GetAllDebts("", strconv.Itoa(myId), strconv.Itoa(data.DebtStatusActive), nil)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not det my debt")
 		return
@@ -82,7 +82,7 @@ func (h *Handler) premiumStatistic(c *gin.Context) {
 
 	var premiumStatistic requests.PremiumStatistic
 
-	FriendsDebts, err := h.services.Debt.GetAllDebts(&myId, nil, strconv.Itoa(data.DebtStatusClosed), nil)
+	FriendsDebts, err := h.services.Debt.GetAllDebts(strconv.Itoa(myId), "", strconv.Itoa(data.DebtStatusClosed), nil)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get friends debts")
 		return
@@ -94,7 +94,7 @@ func (h *Handler) premiumStatistic(c *gin.Context) {
 		premiumStatistic.FriendsDebtsAmount += debt.Amount
 	}
 
-	myDebts, err := h.services.Debt.GetAllDebts(nil, &myId, strconv.Itoa(data.DebtStatusClosed), nil)
+	myDebts, err := h.services.Debt.GetAllDebts("", strconv.Itoa(myId), strconv.Itoa(data.DebtStatusClosed), nil)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get my debt")
 		return
@@ -110,7 +110,7 @@ func (h *Handler) premiumStatistic(c *gin.Context) {
 	premiumStatistic.MonthlyFriendsDebts = []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	friendsClosedDebts, err := h.services.Debt.GetAllDebts(
-		&myId, nil, strconv.Itoa(data.DebtStatusClosed), []string{"-updated_at"})
+		strconv.Itoa(myId), "", strconv.Itoa(data.DebtStatusClosed), []string{"-updated_at"})
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get my debt")
 		return
@@ -124,7 +124,7 @@ func (h *Handler) premiumStatistic(c *gin.Context) {
 	}
 
 	myClosedDebts, err := h.services.Debt.GetAllDebts(
-		nil, &myId, strconv.Itoa(data.DebtStatusClosed), []string{"-updated_at"})
+		"", strconv.Itoa(myId), strconv.Itoa(data.DebtStatusClosed), []string{"-updated_at"})
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get friends debt")
 		return

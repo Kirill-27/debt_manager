@@ -9,7 +9,6 @@ import (
 	"strings"
 )
 
-// todo validate Rating between 1 and 5
 func (h *Handler) createReview(c *gin.Context) {
 	var review data.Review
 	if err := c.BindJSON(&review); err != nil {
@@ -25,7 +24,7 @@ func (h *Handler) createReview(c *gin.Context) {
 	idValue, _ := reviewerId.(int)
 
 	debts, err := h.services.Debt.GetAllDebts(
-		&idValue, &review.LenderId, strconv.Itoa(data.DebtStatusClosed), nil)
+		strconv.Itoa(idValue), strconv.Itoa(review.LenderId), strconv.Itoa(data.DebtStatusClosed), nil)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get closed debts")
 		return
@@ -75,7 +74,7 @@ func (h *Handler) createReview(c *gin.Context) {
 	})
 }
 
-// todo add validation user can see reviews is he hes subscription
+// todo add validation user can see reviews is he has subscription
 func (h *Handler) getAllReviews(c *gin.Context) {
 	filterReviewer := c.Query(makeFilter("reviewer_id"))
 	var reviewerId *int

@@ -74,26 +74,7 @@ func (h *Handler) createDebt(c *gin.Context) {
 func (h *Handler) getAllDebts(c *gin.Context) {
 	//id, _ := c.Get(userCtx)
 	filterDebtor := c.Query(makeFilter("debtor_id"))
-	var debtorId *int
-	if filterDebtor != "" {
-		str, err := strconv.Atoi(filterDebtor)
-		if err != nil {
-			newErrorResponse(c, http.StatusBadRequest, "can not parse debtor_id to int")
-			return
-		}
-		debtorId = &str
-	}
 	filterLender := c.Query(makeFilter("lender_id"))
-	var lenderId *int
-	if filterLender != "" {
-		str, err := strconv.Atoi(filterLender)
-		if err != nil {
-			newErrorResponse(c, http.StatusBadRequest, "can not parse lender_id to int")
-			return
-		}
-		lenderId = &str
-	}
-
 	statuses := c.Query(makeFilter("status"))
 
 	var sorts []string
@@ -103,7 +84,7 @@ func (h *Handler) getAllDebts(c *gin.Context) {
 		sorts = strings.Split(sortAmount, ",")
 	}
 
-	debts, err := h.services.Debt.GetAllDebts(debtorId, lenderId, statuses, sorts)
+	debts, err := h.services.Debt.GetAllDebts(filterDebtor, filterLender, statuses, sorts)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get all debts")
 		return
@@ -265,7 +246,7 @@ func (h *Handler) closeDebt(c *gin.Context) {
 	}
 
 	debtsForLenderAndDebtor, err := h.services.Debt.GetAllDebts(
-		&debt.DebtorId, &debt.LenderId, strconv.Itoa(data.DebtStatusActive), nil)
+		strconv.Itoa(debt.DebtorId), strconv.Itoa(debt.LenderId), strconv.Itoa(data.DebtStatusActive), nil)
 
 	if newAmountDebtor == 0 && newAmountLender == 0 && debtsForLenderAndDebtor == nil {
 		err = h.services.CurrentDebt.DeleteCurrentDebt(debtor[0].Id)

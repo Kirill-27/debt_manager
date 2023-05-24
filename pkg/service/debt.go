@@ -17,8 +17,8 @@ func (s *DebtService) CreateDebt(debt data.Debt) (int, error) {
 	return s.repo.CreateDebt(debt)
 }
 
-func (s *DebtService) GetAllDebts(debtorId *int, lenderId *int, statuses string, sortBy []string) ([]data.Debt, error) {
-	return s.repo.GetAllDebts(debtorId, lenderId, statuses, sortBy)
+func (s *DebtService) GetAllDebts(debtorIds string, lenderIds string, statuses string, sortBy []string) ([]data.Debt, error) {
+	return s.repo.GetAllDebts(debtorIds, lenderIds, statuses, sortBy)
 }
 func (s *DebtService) GetDebtById(debtId int) (*data.Debt, error) {
 	return s.repo.GetDebtById(debtId)

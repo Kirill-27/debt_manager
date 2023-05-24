@@ -6,7 +6,6 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/kirill-27/debt_manager/data"
 	"github.com/kirill-27/debt_manager/helpers"
-	"strconv"
 )
 
 type DebtPostgres struct {
@@ -34,33 +33,31 @@ func (d *DebtPostgres) CreateDebt(debt data.Debt) (int, error) {
 	return id, nil
 }
 
-func (d *DebtPostgres) GetAllDebts(debtorId *int,
-	lenderId *int,
-	statuses string,
-	sortBy []string) ([]data.Debt, error) {
+func (d *DebtPostgres) GetAllDebts(debtorIds string, lenderIds string, statuses string, sortBy []string) (
+	[]data.Debt, error) {
 
 	query := fmt.Sprintf("SELECT * FROM %s ", debtsTable)
-	if debtorId != nil || lenderId != nil || statuses != "" {
+	if debtorIds != "" || lenderIds != "" || statuses != "" {
 		query += "WHERE "
 	}
-	var params []interface{}
+	params := 0
 
-	if debtorId != nil {
-		query += " debtor_id = $" + strconv.Itoa(len(params)+1)
-		params = append(params, debtorId)
+	if debtorIds != "" {
+		query += " debtor_id IN (" + debtorIds + ")"
+		params++
 	}
 
-	if lenderId != nil {
-		if len(params) > 0 {
+	if lenderIds != "" {
+		if params > 0 {
 			query += " AND "
 		}
-		query += " lender_id = $" + strconv.Itoa(len(params)+1)
-		params = append(params, lenderId)
+		query += " lender_id IN (" + lenderIds + ")"
+		params++
 	}
 
 	// it must be the last check for where statement
 	if statuses != "" {
-		if len(params) > 0 {
+		if params > 0 {
 			query += " AND "
 		}
 		query += " status IN (" + statuses + ")"
@@ -70,7 +67,7 @@ func (d *DebtPostgres) GetAllDebts(debtorId *int,
 		query += helpers.ParseSortBy(sortBy)
 	}
 
-	rows, err := d.db.Queryx(query, params...)
+	rows, err := d.db.Queryx(query)
 	if err != nil {
 		return nil, err
 	}
@@ -111,8 +108,8 @@ func (d *DebtPostgres) DeleteDebt(debtId int) error {
 }
 
 func (d *DebtPostgres) CloseAllDebts(debtorId int, lenderId int) error {
-	query := fmt.Sprintf("UPDATE %s SET status=$1 WHERE debtor_id=$2 AND lender_id=$3", debtsTable)
-	_, err := d.db.Exec(query, data.DebtStatusClosed, debtorId, lenderId)
+	query := fmt.Sprintf("UPDATE %s SET status=$1 WHERE debtor_id=$2 AND lender_id=$3 AND status=$4", debtsTable)
+	_, err := d.db.Exec(query, data.DebtStatusClosed, debtorId, lenderId, data.DebtStatusActive)
 	return err
 }
 
