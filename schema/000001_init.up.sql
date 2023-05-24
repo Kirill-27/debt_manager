@@ -26,7 +26,8 @@ CREATE TABLE debts
 CREATE TABLE friends
 (
     my_id  int not null,
-    friend_id  int not null
+    friend_id  int not null,
+    CONSTRAINT unique_friendship UNIQUE (my_id, friend_id)
 );
 
 CREATE TABLE current_debts
