@@ -47,12 +47,20 @@ type Friends interface {
 	CheckIfFriendExists(myId int, friendId int) (bool, error)
 }
 
+type StripePayment interface {
+	CreateStripePayment(stripePayment data.StripePayment) (string, error)
+	UpdateStripePaymentStatus(stripePaymentsId string, status int) error
+	GetStripePaymentByPaymentId(paymentId string) (*data.StripePayment, error)
+	GetAllStripePayments(status *int, sortBy []string) ([]data.StripePayment, error)
+}
+
 type Service struct {
 	Authorization
 	Debt
 	CurrentDebt
 	Review
 	Friends
+	StripePayment
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -62,5 +70,6 @@ func NewService(repos *repository.Repository) *Service {
 		CurrentDebt:   NewCurrentDebtService(repos),
 		Review:        NewReviewService(repos),
 		Friends:       NewFriendsService(repos),
+		StripePayment: NewStripePaymentService(repos),
 	}
 }

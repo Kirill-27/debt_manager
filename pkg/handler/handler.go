@@ -16,6 +16,8 @@ func NewHandler(services *service.Service) *Handler {
 func (h *Handler) InitRouters() *gin.Engine {
 	exchangeRatesKeeper := NewExchangeRatesKeeper()
 	go exchangeRatesKeeper.ExchangeRatesGetter()
+	go h.StripeKeeper()
+	go h.StripeHandler()
 
 	router := gin.New()
 

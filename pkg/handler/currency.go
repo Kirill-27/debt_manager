@@ -32,11 +32,11 @@ func NewExchangeRatesKeeper() *ExchangeRatesKeeper {
 
 	resp, err := http.Get(NBUUrl)
 	if err != nil {
-		log.Fatal("an error occurred when get from nbu api ")
+		log.Println("an error occurred when get from nbu api ")
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-		log.Fatal("an error occurred when decode response from nbu api")
+		log.Println("an error occurred when decode response from nbu api")
 	}
 	return &ExchangeRatesKeeper{
 		USD: response[USDIndex].Rate,

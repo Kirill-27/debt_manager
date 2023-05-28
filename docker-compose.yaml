@@ -16,6 +16,15 @@ services:
   volumes:
    - db-data:/var/lib/postgresql/data
 
+ redis:
+  image: redis
+  ports:
+   - "6379:6379"
+  volumes:
+   - redis-data:/data
+  networks:
+   - my-network
+
  app:
   image: kyrylchernov/debts-back:0.01
   restart: always
@@ -23,6 +32,7 @@ services:
    - "80:8080"
   depends_on:
    - db
+   - redis
   networks:
    - my-network
 
@@ -31,3 +41,4 @@ networks:
 
 volumes:
  db-data:
+ redis-data:

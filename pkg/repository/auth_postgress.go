@@ -38,10 +38,10 @@ func (r *AuthPostgres) GetUser(email, password *string) (*data.User, error) {
 	var user data.User
 	var err error
 	if email != nil && password != nil {
-		query := fmt.Sprintf("SELECT id FROM %s WHERE email=$1 AND password=$2", usersTable)
+		query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1 AND password=$2", usersTable)
 		err = r.db.Get(&user, query, email, password)
 	} else {
-		query := fmt.Sprintf("SELECT id FROM %s WHERE email=$1", usersTable)
+		query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1", usersTable)
 		err = r.db.Get(&user, query, email)
 	}
 

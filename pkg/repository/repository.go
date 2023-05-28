@@ -43,12 +43,20 @@ type Friends interface {
 	CheckIfFriendExists(myId int, friendId int) (bool, error)
 }
 
+type StripePayment interface {
+	CreateStripePayment(stripePayment data.StripePayment) (string, error)
+	UpdateStripePaymentStatus(stripePaymentsId string, status int) error
+	GetStripePaymentByPaymentId(paymentId string) (*data.StripePayment, error)
+	GetAllStripePayments(status *int, sortBy []string) ([]data.StripePayment, error)
+}
+
 type Repository struct {
 	Authorization
 	Debt
 	CurrentDebt
 	Review
 	Friends
+	StripePayment
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -58,5 +66,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		CurrentDebt:   NewCurrentDebtPostgres(db),
 		Review:        NewReviewPostgres(db),
 		Friends:       NewFriendsPostgres(db),
+		StripePayment: NewStripePaymentPostgres(db),
 	}
 }

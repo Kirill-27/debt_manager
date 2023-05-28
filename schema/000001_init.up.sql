@@ -48,6 +48,15 @@ CREATE TABLE reviews
     updated_at timestamp without time zone default (now() at time zone 'utc')
 );
 
+CREATE TABLE stripe_payments
+(
+    payment_id text not null unique,
+    user_id  int not null,
+    status  int not null,
+    created_at timestamp without time zone default (now() at time zone 'utc'),
+    updated_at timestamp without time zone default (now() at time zone 'utc')
+);
+
 CREATE OR REPLACE FUNCTION update_debts_updated_at()
     RETURNS TRIGGER AS $$
 BEGIN
@@ -63,5 +72,10 @@ EXECUTE FUNCTION update_debts_updated_at();
 
 CREATE TRIGGER update_review_time
     BEFORE UPDATE ON reviews
+    FOR EACH ROW
+EXECUTE FUNCTION update_debts_updated_at();
+
+CREATE TRIGGER update_stripe_payments_time
+    BEFORE UPDATE ON stripe_payments
     FOR EACH ROW
 EXECUTE FUNCTION update_debts_updated_at();
