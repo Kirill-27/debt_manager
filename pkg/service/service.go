@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/kirill-27/debt_manager/data"
 	"github.com/kirill-27/debt_manager/pkg/repository"
+	"time"
 )
 
 //go:generate mockgen -source=service.go -destination=mocks/mock.go
@@ -54,6 +55,11 @@ type StripePayment interface {
 	GetAllStripePayments(status *int, sortBy []string) ([]data.StripePayment, error)
 }
 
+type StripePaymentKeys interface {
+	GetLastHandled() (time.Time, error)
+	SetLastHandled(lastHandledTime int64) error
+}
+
 type Service struct {
 	Authorization
 	Debt
@@ -61,15 +67,17 @@ type Service struct {
 	Review
 	Friends
 	StripePayment
+	StripePaymentKeys
 }
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
-		Authorization: NewAuthService(repos),
-		Debt:          NewDebtService(repos),
-		CurrentDebt:   NewCurrentDebtService(repos),
-		Review:        NewReviewService(repos),
-		Friends:       NewFriendsService(repos),
-		StripePayment: NewStripePaymentService(repos),
+		Authorization:     NewAuthService(repos),
+		Debt:              NewDebtService(repos),
+		CurrentDebt:       NewCurrentDebtService(repos),
+		Review:            NewReviewService(repos),
+		Friends:           NewFriendsService(repos),
+		StripePayment:     NewStripePaymentService(repos),
+		StripePaymentKeys: NewStripePaymentKeyService(repos),
 	}
 }

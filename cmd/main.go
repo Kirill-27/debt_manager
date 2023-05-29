@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/go-redis/redis"
 	"github.com/kirill-27/debt_manager"
 	"github.com/kirill-27/debt_manager/pkg/handler"
 	"github.com/kirill-27/debt_manager/pkg/repository"
@@ -27,7 +28,14 @@ func main() {
 	if err != nil {
 		logrus.Fatalf("failed to init db: %s", err.Error())
 	}
-	repo := repository.NewRepository(db)
+
+	client := redis.NewClient(&redis.Options{
+		Addr:     viper.GetString("redis.host") + ":" + viper.GetString("redis.port"),
+		Password: "",
+		DB:       0,
+	})
+
+	repo := repository.NewRepository(db, client)
 	services := service.NewService(repo)
 	handlers := handler.NewHandler(services)
 	srv := new(debt_manager.Server)

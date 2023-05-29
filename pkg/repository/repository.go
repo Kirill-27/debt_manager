@@ -1,8 +1,10 @@
 package repository
 
 import (
+	"github.com/go-redis/redis"
 	"github.com/jmoiron/sqlx"
 	"github.com/kirill-27/debt_manager/data"
+	"time"
 )
 
 type Authorization interface {
@@ -50,6 +52,11 @@ type StripePayment interface {
 	GetAllStripePayments(status *int, sortBy []string) ([]data.StripePayment, error)
 }
 
+type StripePaymentKeys interface {
+	GetLastHandled() (time.Time, error)
+	SetLastHandled(lastHandledTime int64) error
+}
+
 type Repository struct {
 	Authorization
 	Debt
@@ -57,15 +64,17 @@ type Repository struct {
 	Review
 	Friends
 	StripePayment
+	StripePaymentKeys
 }
 
-func NewRepository(db *sqlx.DB) *Repository {
+func NewRepository(db *sqlx.DB, redis *redis.Client) *Repository {
 	return &Repository{
-		Authorization: NewAuthPostgres(db),
-		Debt:          NewDebtPostgres(db),
-		CurrentDebt:   NewCurrentDebtPostgres(db),
-		Review:        NewReviewPostgres(db),
-		Friends:       NewFriendsPostgres(db),
-		StripePayment: NewStripePaymentPostgres(db),
+		Authorization:     NewAuthPostgres(db),
+		Debt:              NewDebtPostgres(db),
+		CurrentDebt:       NewCurrentDebtPostgres(db),
+		Review:            NewReviewPostgres(db),
+		Friends:           NewFriendsPostgres(db),
+		StripePayment:     NewStripePaymentPostgres(db),
+		StripePaymentKeys: NewStripePaymentRedis(redis),
 	}
 }

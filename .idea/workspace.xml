@@ -5,23 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1510878e-4c5f-4281-8d87-cd3965ca00dd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/data/stripe_payment.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/handler/stripe.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/repository/stripe_payment_postgress.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/service/stripe_payment.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/repository/stripe_payment_redis.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/service/stripe_payment_keys.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/db.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/handler/currency.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/currency.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/handler/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/repository/auth_postgress.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/repository/auth_postgress.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/repository/postgress.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/repository/postgress.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/handler/stripe.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/stripe.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/repository/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/repository/repository.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/service/service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schema/000001_init.up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/000001_init.up.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vendor/modules.txt" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/modules.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -66,16 +59,16 @@
     "WebServerToolWindowFactoryState": "false",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/Users/kirillchernov/go/src/github.com/kirill-27/debt_manager/pkg/handler"
+    "last_opened_file_path": "/Users/kirillchernov/go/src/github.com/kirill-27/debt_manager/pkg/service"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/pkg/handler" />
+      <recent name="$PROJECT_DIR$/pkg/service" />
       <recent name="$PROJECT_DIR$/pkg/repository" />
+      <recent name="$PROJECT_DIR$/pkg/handler" />
       <recent name="$PROJECT_DIR$/data" />
       <recent name="$PROJECT_DIR$/requests" />
-      <recent name="$PROJECT_DIR$/schema" />
     </key>
   </component>
   <component name="RunManager">
@@ -123,23 +116,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/pkg/handler/stripe.go</url>
-          <line>108</line>
+          <line>139</line>
           <option name="timeStamp" value="16" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/pkg/handler/stripe.go</url>
-          <line>61</line>
+          <line>83</line>
           <option name="timeStamp" value="17" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/pkg/handler/stripe.go</url>
-          <line>43</line>
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/pkg/repository/auth_postgress.go</url>
-          <line>37</line>
-          <option name="timeStamp" value="19" />
+          <line>39</line>
+          <option name="timeStamp" value="25" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

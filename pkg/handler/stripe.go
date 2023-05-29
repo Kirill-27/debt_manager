@@ -15,19 +15,45 @@ const stripeKey = "sk_test_51NCLXnL4aVSmf4QOQy6EZqDUt4f7ej8My8LFe462HwiWePr1MaAi
 func (h *Handler) StripeKeeper() {
 	stripe.Key = stripeKey
 	for {
-		lastTwoDays := time.Now().AddDate(0, 0, -2)
+		time.Sleep(20 * time.Second)
+		lastTime, err := h.services.StripePaymentKeys.GetLastHandled()
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+		lastTimeMinusFive := lastTime.Add(-5 * time.Minute)
 
 		params := &stripe.PaymentIntentListParams{
 			CreatedRange: &stripe.RangeQueryParams{
-				GreaterThan: lastTwoDays.Unix(),
+				GreaterThan: lastTimeMinusFive.Unix(),
 			},
 		}
+		var newTime *int64
 
 		it := paymentintent.List(params)
 		for it.Next() {
+
 			paymentIntent := it.PaymentIntent()
+			if newTime == nil {
+				newTime = &paymentIntent.Created
+			}
 			stripePayment, err := h.services.StripePayment.GetStripePaymentByPaymentId(paymentIntent.ID)
 			if stripePayment != nil {
+				continue
+			}
+
+			newStripePayment := data.StripePayment{
+				PaymentId: paymentIntent.ID,
+			}
+
+			if paymentIntent.Status != stripe.PaymentIntentStatusProcessing && paymentIntent.Status != stripe.PaymentIntentStatusSucceeded {
+				newStripePayment.UserId = 0
+				newStripePayment.Status = data.StripePaymentsStatusCanceled
+				_, err = h.services.StripePayment.CreateStripePayment(newStripePayment)
+				if err != nil {
+					log.Println(err)
+					continue
+				}
 				continue
 			}
 
@@ -35,10 +61,6 @@ func (h *Handler) StripeKeeper() {
 			if err != nil {
 				log.Println(err)
 				continue
-			}
-
-			newStripePayment := data.StripePayment{
-				PaymentId: paymentIntent.ID,
 			}
 
 			user, err := h.services.Authorization.GetUser(&pm.BillingDetails.Email, nil)
@@ -77,15 +99,24 @@ func (h *Handler) StripeKeeper() {
 
 		if err := it.Err(); err != nil {
 			log.Println(err)
+			continue
+
 		}
 
-		time.Sleep(10 * time.Second)
+		if newTime != nil {
+			err = h.services.StripePaymentKeys.SetLastHandled(*newTime)
+			if err != nil {
+				log.Println(err)
+			}
+		}
+
 	}
 }
 
 func (h *Handler) StripeHandler() {
 	stripe.Key = stripeKey
 	for {
+		time.Sleep(20 * time.Second)
 		status := data.StripePaymentsStatusProcessing
 		processingPayments, err := h.services.StripePayment.GetAllStripePayments(&status, nil)
 		if err != nil {
@@ -126,7 +157,6 @@ func (h *Handler) StripeHandler() {
 			}
 
 		}
-		time.Sleep(10 * time.Second)
 	}
 }
 
