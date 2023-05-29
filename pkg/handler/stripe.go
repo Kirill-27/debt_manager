@@ -48,7 +48,7 @@ func (h *Handler) StripeKeeper() {
 
 			if paymentIntent.Status != stripe.PaymentIntentStatusProcessing && paymentIntent.Status != stripe.PaymentIntentStatusSucceeded {
 				newStripePayment.UserId = 0
-				newStripePayment.Status = data.StripePaymentsStatusCanceled
+				newStripePayment.Status = data.StripePaymentsStatusProcessing
 				_, err = h.services.StripePayment.CreateStripePayment(newStripePayment)
 				if err != nil {
 					log.Println(err)
@@ -138,6 +138,17 @@ func (h *Handler) StripeHandler() {
 				}
 
 				user, err := h.services.Authorization.GetUser(&pm.BillingDetails.Email, nil)
+				if err != nil {
+					log.Println(err)
+					continue
+				}
+				if user == nil {
+					err = h.services.StripePayment.UpdateStripePaymentStatus(payment.PaymentId, data.StripePaymentsStatusIncorrectEmail)
+					if err != nil {
+						log.Println(err)
+					}
+					continue
+				}
 				user.SubscriptionType = data.SubscriptionTypePremium
 				err = h.services.Authorization.UpdateUser(*user)
 				if err != nil {
@@ -151,11 +162,12 @@ func (h *Handler) StripeHandler() {
 				}
 				continue
 			}
-			err = h.services.StripePayment.UpdateStripePaymentStatus(payment.PaymentId, data.StripePaymentsStatusCanceled)
-			if err != nil {
-				log.Println(err)
+			if payment.CreatedAt.Before(time.Now().AddDate(0, 0, -1)) {
+				err = h.services.StripePayment.UpdateStripePaymentStatus(payment.PaymentId, data.StripePaymentsStatusCanceled)
+				if err != nil {
+					log.Println(err)
+				}
 			}
-
 		}
 	}
 }

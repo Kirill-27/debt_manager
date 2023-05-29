@@ -4,12 +4,12 @@ db:
   username: "debts"
   password: "debts"
   dbname: "debts"
-  #host: "localhost"
-  host: "debt_manager-db-1"
+  host: "localhost"
+  #host: "debt_manager-db-1"
   port: "5432"
   sslmode: "disable"
 
 redis:
-  #host: "localhost"
-  host: "debt_manager-redis-1"
+  host: "localhost"
+  #host: "debt_manager-redis-1"
   port: "6379"
