@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/kirill-27/debt_manager/data"
 	"net/http"
 	"strconv"
 	"strings"
@@ -38,7 +39,12 @@ func (h *Handler) getAllCurrentDebts(c *gin.Context) {
 
 	debts, err := h.services.CurrentDebt.GetAllCurrentDebts(debtorId, lenderId, sorts)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get all current debts")
+		return
+	}
+
+	if debts == nil {
+		c.JSON(http.StatusOK, []data.CurrentDebts{})
 		return
 	}
 

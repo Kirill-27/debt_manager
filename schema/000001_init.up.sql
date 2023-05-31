@@ -1,12 +1,14 @@
 CREATE TABLE users
 (
     id serial not null unique,
-    email     text not null,
+    email     text not null unique,
     password    text not null,
     full_name  text not null,
-    subscription_type int not null,
+    subscription_type int default 1,
     photo text not null,
-    rating float not null
+    rating float default 5,
+    marks_sum int default 0,
+    marks_number int default 0
 );
 
 CREATE TABLE debts
@@ -24,7 +26,8 @@ CREATE TABLE debts
 CREATE TABLE friends
 (
     my_id  int not null,
-    friend_id  int not null
+    friend_id  int not null,
+    CONSTRAINT unique_friendship UNIQUE (my_id, friend_id)
 );
 
 CREATE TABLE current_debts
@@ -45,18 +48,34 @@ CREATE TABLE reviews
     updated_at timestamp without time zone default (now() at time zone 'utc')
 );
 
-CREATE OR REPLACE FUNCTION trigger_set_timestamp()
-    RETURNS TRIGGER AS
-$$
+CREATE TABLE stripe_payments
+(
+    payment_id text not null unique,
+    user_id  int not null,
+    status  int not null,
+    created_at timestamp without time zone default (now() at time zone 'utc'),
+    updated_at timestamp without time zone default (now() at time zone 'utc')
+);
+
+CREATE OR REPLACE FUNCTION update_debts_updated_at()
+    RETURNS TRIGGER AS $$
 BEGIN
-    NEW.updated_at = (now() at time zone 'utc');
+    NEW.updated_at = now() at time zone 'utc';
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER
-    update_debts_status
-    AFTER update
-    on debts
-    for EACH ROW
-EXECUTE PROCEDURE trigger_set_timestamp();
+CREATE TRIGGER update_debt_time
+    BEFORE UPDATE ON debts
+    FOR EACH ROW
+EXECUTE FUNCTION update_debts_updated_at();
+
+CREATE TRIGGER update_review_time
+    BEFORE UPDATE ON reviews
+    FOR EACH ROW
+EXECUTE FUNCTION update_debts_updated_at();
+
+CREATE TRIGGER update_stripe_payments_time
+    BEFORE UPDATE ON stripe_payments
+    FOR EACH ROW
+EXECUTE FUNCTION update_debts_updated_at();

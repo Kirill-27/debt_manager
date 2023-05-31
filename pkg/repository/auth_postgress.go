@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/kirill-27/debt_manager/data"
+	"github.com/kirill-27/debt_manager/helpers"
+	"strconv"
 )
 
 type AuthPostgres struct {
@@ -17,16 +19,14 @@ func NewAuthPostgres(db *sqlx.DB) *AuthPostgres {
 
 func (r *AuthPostgres) CreateUser(user data.User) (int, error) {
 	var id int
-	query := fmt.Sprintf("INSERT INTO %s (password, email, full_name, photo, rating, subscription_type)"+
-		" values ($1, $2, $3, $4, $5, $6) RETURNING id", usersTable)
+	query := fmt.Sprintf("INSERT INTO %s (password, email, full_name, photo)"+
+		" values ($1, $2, $3, $4) RETURNING id", usersTable)
 
 	row := r.db.QueryRow(query,
 		user.Password,
 		user.Email,
 		user.FullName,
-		user.Photo,
-		user.Rating,
-		user.SubscriptionType)
+		user.Photo)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}
@@ -34,10 +34,17 @@ func (r *AuthPostgres) CreateUser(user data.User) (int, error) {
 	return id, nil
 }
 
-func (r *AuthPostgres) GetUser(email, password string) (*data.User, error) {
+func (r *AuthPostgres) GetUser(email, password *string) (*data.User, error) {
 	var user data.User
-	query := fmt.Sprintf("SELECT id FROM %s WHERE email=$1 AND password=$2", usersTable)
-	err := r.db.Get(&user, query, email, password)
+	var err error
+	if email != nil && password != nil {
+		query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1 AND password=$2", usersTable)
+		err = r.db.Get(&user, query, email, password)
+	} else {
+		query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1", usersTable)
+		err = r.db.Get(&user, query, email)
+	}
+
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
@@ -45,23 +52,19 @@ func (r *AuthPostgres) GetUser(email, password string) (*data.User, error) {
 	return &user, err
 }
 
-func (r *AuthPostgres) GetAllUsers(sortBy []string) ([]data.User, error) {
-	query := fmt.Sprintf("SELECT * FROM %s ", usersTable)
+func (r *AuthPostgres) GetAllUsers(sortBy []string, friendsFor *int) ([]data.User, error) {
+	query := fmt.Sprintf("SELECT %s.* FROM %s ", usersTable, usersTable)
 
 	var params []interface{}
 
+	if friendsFor != nil {
+		query += fmt.Sprintf("LEFT JOIN %s on %s.id =  %s.friend_id ", friendsTable, usersTable, friendsTable) +
+			fmt.Sprintf("WHERE %s.my_id = $", friendsTable) + strconv.Itoa(len(params)+1)
+		params = append(params, *friendsFor)
+	}
+
 	if len(sortBy) != 0 {
-		query += fmt.Sprintf(" ORDER BY ")
-		for index, value := range sortBy {
-			if index > 0 {
-				query += ", "
-			}
-			if value[0] == '-' {
-				query += value[1:] + " DESC"
-			} else {
-				query += value
-			}
-		}
+		query += helpers.ParseSortBy(sortBy)
 	}
 
 	rows, err := r.db.Queryx(query, params...)
@@ -95,10 +98,11 @@ func (r *AuthPostgres) GetUserById(id int) (*data.User, error) {
 
 func (r *AuthPostgres) UpdateUser(user data.User) error {
 	query := fmt.Sprintf(
-		"UPDATE %s SET email=$2, password=$3, full_name=$4, subscription_type=$5, photo=$6, rating=$7 WHERE id=$1 ",
+		"UPDATE %s SET email=$2, password=$3, full_name=$4, subscription_type=$5, photo=$6, rating=$7, "+
+			"marks_sum=$8, marks_number=$9 WHERE id=$1 ",
 		usersTable)
 
 	_, err := r.db.Exec(query, user.Id, user.Email, user.Password, user.FullName,
-		user.SubscriptionType, user.Photo, user.Rating)
+		user.SubscriptionType, user.Photo, user.Rating, user.MarksSum, user.MarksNumber)
 	return err
 }

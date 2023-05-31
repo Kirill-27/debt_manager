@@ -1,6 +1,8 @@
 # github.com/Masterminds/squirrel v1.5.3
 ## explicit; go 1.14
-github.com/Masterminds/squirrel
+# github.com/asaskevich/govalidator v0.0.0-20200108200545-475eaeb16496
+## explicit; go 1.12
+github.com/asaskevich/govalidator
 # github.com/bytedance/sonic v1.8.2
 ## explicit; go 1.15
 github.com/bytedance/sonic
@@ -40,6 +42,12 @@ github.com/gin-gonic/gin/binding
 github.com/gin-gonic/gin/internal/bytesconv
 github.com/gin-gonic/gin/internal/json
 github.com/gin-gonic/gin/render
+# github.com/go-chi/chi v1.5.4
+## explicit; go 1.16
+# github.com/go-ozzo/ozzo-validation/v4 v4.3.0
+## explicit; go 1.13
+github.com/go-ozzo/ozzo-validation/v4
+github.com/go-ozzo/ozzo-validation/v4/is
 # github.com/go-pg/pg/v10 v10.11.0
 ## explicit; go 1.11
 # github.com/go-pg/zerochecker v0.2.0
@@ -54,6 +62,15 @@ github.com/go-playground/universal-translator
 # github.com/go-playground/validator/v10 v10.11.2
 ## explicit; go 1.18
 github.com/go-playground/validator/v10
+# github.com/go-redis/redis v6.15.9+incompatible
+## explicit
+github.com/go-redis/redis
+github.com/go-redis/redis/internal
+github.com/go-redis/redis/internal/consistenthash
+github.com/go-redis/redis/internal/hashtag
+github.com/go-redis/redis/internal/pool
+github.com/go-redis/redis/internal/proto
+github.com/go-redis/redis/internal/util
 # github.com/goccy/go-json v0.10.0
 ## explicit; go 1.12
 github.com/goccy/go-json
@@ -96,10 +113,8 @@ github.com/json-iterator/go
 github.com/klauspost/cpuid/v2
 # github.com/lann/builder v0.0.0-20180802200727-47ae307949d0
 ## explicit
-github.com/lann/builder
 # github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0
 ## explicit
-github.com/lann/ps
 # github.com/leodido/go-urn v1.2.1
 ## explicit; go 1.13
 github.com/leodido/go-urn
@@ -158,6 +173,12 @@ github.com/spf13/viper/internal/encoding/javaproperties
 github.com/spf13/viper/internal/encoding/json
 github.com/spf13/viper/internal/encoding/toml
 github.com/spf13/viper/internal/encoding/yaml
+# github.com/stripe/stripe-go/v74 v74.20.0
+## explicit; go 1.13
+github.com/stripe/stripe-go/v74
+github.com/stripe/stripe-go/v74/form
+github.com/stripe/stripe-go/v74/paymentintent
+github.com/stripe/stripe-go/v74/paymentmethod
 # github.com/subosito/gotenv v1.4.2
 ## explicit; go 1.18
 github.com/subosito/gotenv

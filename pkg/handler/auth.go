@@ -1,11 +1,14 @@
 package handler
 
 import (
-	"errors"
-	"github.com/gin-gonic/gin"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/go-ozzo/ozzo-validation/v4/is"
 	"github.com/kirill-27/debt_manager/data"
 	"github.com/kirill-27/debt_manager/helpers"
 	"github.com/kirill-27/debt_manager/requests"
+
+	"errors"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"strings"
@@ -30,23 +33,31 @@ func (h *Handler) signUp(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
+	err := validation.Validate(input.Email, validation.Required, is.Email)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
 
-	input.SubscriptionType = data.SubscriptionTypeFree
 	input.Password = helpers.GeneratePasswordHash(input.Password)
+	user, err := h.services.Authorization.GetUser(&input.Email, nil)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get user by email")
+		return
+	}
+	if user != nil {
+		newErrorResponse(c, http.StatusBadRequest, "user with this email address already exists")
+		return
+	}
 	id, err := h.services.Authorization.CreateUser(input)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not create user")
 		return
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"id": id,
 	})
-}
-
-type signInInput struct {
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
 }
 
 // @Summary SignIn
@@ -62,7 +73,7 @@ type signInInput struct {
 // @Failure default {object} errorResponse
 // @Router /auth/sign-in [post]
 func (h *Handler) signIn(c *gin.Context) {
-	var input signInInput
+	var input requests.SignInInput
 
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
@@ -80,23 +91,30 @@ func (h *Handler) signIn(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"token":   token,
-		"user_id": userId,
+		"token": token,
+		"id":    userId,
 	})
 }
 
 // todo add permission check
 func (h *Handler) getAllUsers(c *gin.Context) {
-	var sorts []string
+	filterMyFriends := c.Query(makeFilter("my_friends"))
+	var friendsFor *int
+	if filterMyFriends == "true" {
+		id, _ := c.Get(userCtx)
+		intId, _ := id.(int)
+		friendsFor = &intId
+	}
 
+	var sorts []string
 	sortAmount := c.Query("sort")
 	if sortAmount != "" {
 		sorts = strings.Split(sortAmount, ",")
 	}
 
-	users, err := h.services.Authorization.GetAllUsers(sorts)
+	users, err := h.services.Authorization.GetAllUsers(sorts, friendsFor)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get all users")
 		return
 	}
 
@@ -104,11 +122,11 @@ func (h *Handler) getAllUsers(c *gin.Context) {
 	idValue, _ := id.(int)
 	requester, err := h.services.Authorization.GetUserById(idValue)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get user by id")
 		return
 	}
 	if requester == nil {
-		newErrorResponse(c, http.StatusNotFound, "wrong id in auth token")
+		newErrorResponse(c, http.StatusBadRequest, "wrong id in auth token")
 		return
 	}
 
@@ -118,10 +136,12 @@ func (h *Handler) getAllUsers(c *gin.Context) {
 	if requester.SubscriptionType == data.SubscriptionTypeFree {
 		for index := range users {
 			users[index].Rating = 0
+			users[index].MarksSum = 0
+			users[index].MarksNumber = 0
 		}
 	}
-	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+	if users == nil {
+		c.JSON(http.StatusOK, []data.User{})
 		return
 	}
 
@@ -141,25 +161,55 @@ func (h *Handler) updateUser(c *gin.Context) {
 		return
 	}
 
+	user, err := h.services.Authorization.GetUserById(userId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get user by id")
+		return
+	}
+	if user == nil {
+		newErrorResponse(c, http.StatusNotFound, "there is not user with such id")
+		return
+	}
+
 	var fieldsToUpdate requests.UpdateUser
 	if err := c.BindJSON(&fieldsToUpdate); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	user, err := h.services.Authorization.GetUserById(userId)
-	if user == nil {
-		newErrorResponse(c, http.StatusNotFound, "there is not user with such id")
-		return
+	if fieldsToUpdate.Email != "" && fieldsToUpdate.Email != user.Email {
+		err := validation.Validate(fieldsToUpdate.Email, validation.Required, is.Email)
+		if err != nil {
+			newErrorResponse(c, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		userEmail, err := h.services.Authorization.GetUser(&fieldsToUpdate.Email, nil)
+		if err != nil {
+			newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get user by email")
+			return
+		}
+		if userEmail != nil {
+			newErrorResponse(c, http.StatusBadRequest, "user with this email address already exists")
+			return
+		}
+
+		user.Email = fieldsToUpdate.Email
 	}
-	user.FullName = fieldsToUpdate.FullName
-	user.Photo = fieldsToUpdate.Photo
-	user.Email = fieldsToUpdate.Email
-	user.Password = helpers.GeneratePasswordHash(fieldsToUpdate.Password)
+
+	if fieldsToUpdate.Photo != "" {
+		user.Photo = fieldsToUpdate.Photo
+	}
+	if fieldsToUpdate.FullName != "" {
+		user.FullName = fieldsToUpdate.FullName
+	}
+	if fieldsToUpdate.Password != "" {
+		user.Password = helpers.GeneratePasswordHash(fieldsToUpdate.Password)
+	}
 
 	err = h.services.Authorization.UpdateUser(*user)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not update user")
 		return
 	}
 	c.JSON(http.StatusNoContent, nil)
@@ -174,7 +224,7 @@ func (h *Handler) getUserById(c *gin.Context) {
 
 	user, err := h.services.Authorization.GetUserById(userId)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get user by id")
 		return
 	}
 	if user == nil {
@@ -182,20 +232,22 @@ func (h *Handler) getUserById(c *gin.Context) {
 		return
 	}
 	id, _ := c.Get(userCtx)
+	user.Password = ""
 	if id != user.Id {
-		user.Password = ""
 		idValue, _ := id.(int)
 		requester, err := h.services.Authorization.GetUserById(idValue)
 		if err != nil {
-			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			newErrorResponse(c, http.StatusInternalServerError, "error on the server. contact support. can not get user by id")
 			return
 		}
 		if requester == nil {
-			newErrorResponse(c, http.StatusNotFound, "wrong id in auth token")
+			newErrorResponse(c, http.StatusBadRequest, "wrong id in auth token")
 			return
 		}
 		if requester.SubscriptionType == data.SubscriptionTypeFree {
 			user.Rating = 0
+			user.MarksNumber = 0
+			user.MarksSum = 0
 		}
 	}
 	c.JSON(http.StatusOK, *user)

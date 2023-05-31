@@ -14,7 +14,14 @@ func NewHandler(services *service.Service) *Handler {
 }
 
 func (h *Handler) InitRouters() *gin.Engine {
+	exchangeRatesKeeper := NewExchangeRatesKeeper()
+	go exchangeRatesKeeper.ExchangeRatesGetter()
+	go h.StripeKeeper()
+	go h.StripeHandler()
+
 	router := gin.New()
+
+	router.GET("/currency-rate", exchangeRatesKeeper.currencyRate)
 
 	auth := router.Group("/auth")
 	{
@@ -27,8 +34,8 @@ func (h *Handler) InitRouters() *gin.Engine {
 		users := api.Group("/users")
 		{
 			users.GET("/", h.getAllUsers)
-			users.PATCH("/:id", h.updateUser)
 			users.GET("/:id", h.getUserById)
+			users.PATCH("/:id", h.updateUser)
 		}
 		debts := api.Group("/debts")
 		{
@@ -36,13 +43,31 @@ func (h *Handler) InitRouters() *gin.Engine {
 			debts.GET("/", h.getAllDebts)
 			debts.GET("/:id", h.getDebtById)
 			debts.DELETE("/:id", h.deleteDebtById)
+
 			debts.POST("/activate/:id", h.activateDebt)
 			debts.POST("/close/:id", h.closeDebt)
+			debts.POST("/close-all-with/:id", h.closeAllWithDebt)
 		}
 		currentDebts := api.Group("/current-debts")
 		{
 			currentDebts.GET("/", h.getAllCurrentDebts)
 		}
+		reviews := api.Group("/reviews")
+		{
+			reviews.POST("/", h.createReview)
+			reviews.GET("/", h.getAllReviews)
+			reviews.PATCH("/:id", h.updateReview)
+		}
+		friends := api.Group("/friends")
+		{
+			friends.POST("/:id", h.addFriend)
+		}
+		statistics := api.Group("/statistic")
+		{
+			statistics.GET("/common", h.commonStatistic)
+			statistics.GET("/premium", h.premiumStatistic)
+		}
+
 	}
 	return router
 }
