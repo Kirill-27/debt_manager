@@ -108,7 +108,8 @@ func (d *DebtPostgres) DeleteDebt(debtId int) error {
 }
 
 func (d *DebtPostgres) CloseAllDebts(debtorId int, lenderId int) error {
-	query := fmt.Sprintf("UPDATE %s SET status=$1 WHERE debtor_id=$2 AND lender_id=$3 AND status=$4", debtsTable)
+	query := fmt.Sprintf("UPDATE %s SET status=$1 WHERE status=$4"+
+		" AND ((debtor_id=$2 AND lender_id=$3) OR  (debtor_id=$3 AND lender_id=$2))", debtsTable)
 	_, err := d.db.Exec(query, data.DebtStatusClosed, debtorId, lenderId, data.DebtStatusActive)
 	return err
 }

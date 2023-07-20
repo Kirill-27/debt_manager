@@ -7,7 +7,7 @@
     <list default="true" id="1510878e-4c5f-4281-8d87-cd3965ca00dd" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/handler/stripe.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/handler/stripe.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/generate_password_hash.go" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/generate_password_hash.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,11 +108,6 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/pkg/handler/stripe.go</url>
-          <line>139</line>
-          <option name="timeStamp" value="16" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/pkg/handler/stripe.go</url>
           <line>83</line>
           <option name="timeStamp" value="17" />
         </line-breakpoint>
@@ -120,6 +115,11 @@
           <url>file://$PROJECT_DIR$/pkg/handler/stripe.go</url>
           <line>39</line>
           <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/handler/statistic.go</url>
+          <line>77</line>
+          <option name="timeStamp" value="26" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

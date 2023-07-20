@@ -96,7 +96,6 @@ func (h *Handler) signIn(c *gin.Context) {
 	})
 }
 
-// todo add permission check
 func (h *Handler) getAllUsers(c *gin.Context) {
 	filterMyFriends := c.Query(makeFilter("my_friends"))
 	var friendsFor *int
